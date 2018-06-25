@@ -1,0 +1,20 @@
+
+【＃タイトル】gstart
+
+■概要
+
+　gstartは、Groovyスクリプトのランチャです。
+　自作した Groovyスクリプトを、タスクトレイアイコンから実行できます。
+
+■ドキュメント
+
+・【リンク：リリースノート：releasenote.html】
+・【リンク：ユーザマニュアル：manuser.html】
+
+■API仕様書
+
+　API仕様書(Groovydoc)は以下を参照してください。
+
+・【リンク：gstart / Groovydoc：groovydoc/index.html】
+
+以上

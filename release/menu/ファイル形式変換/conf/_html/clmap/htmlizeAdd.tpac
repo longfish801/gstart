@@ -1,0 +1,32 @@
+#! clmap HTML化処理の拡張
+
+## dec
+	import groovy.util.slurpersupport.GPathResult;
+	import io.github.longfish801.yakumo.bltxt.BLxmlConvertor;
+	import org.apache.commons.lang3.StringEscapeUtils;
+
+## map block
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List attrs = convertor.convertNodeChildren(node, 'isAttr');
+	List lowers = convertor.convertNodeChildren(node, 'isLineOrBlock');
+# closure 書影
+	return """<div class="amathum" id="Books:EAN:${attrs[0]}:Medium"></div>""";
+
+# closure 注意
+	return """<div class="attention">\n${lowers.join("\n")}\n</div>""";
+
+# closure 秘密
+	return """<div class="secret">\n${lowers.join("\n")}\n</div>""";
+
+## map inline
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List attrs = node.attr.collect { it.text() };
+	String cont = convertor.convertNodeChildren(node.cont).join('');
+
+# closure ネタバレ
+	return """<span class="secret">${cont}</span>""";
+

@@ -1,0 +1,57 @@
+#! clmap EPUB定義
+
+## map blxml
+# dec
+import java.text.SimpleDateFormat;
+
+import org.apache.commons.io.FilenameUtils;
+
+# closure head
+	// ヘッダ情報を生成します
+	Map map = [:];
+	node.children().each { GPathResult subNode ->
+		if (subNode.name() == 'head') map[subNode.@tag as String] = convertor.convertNodeChildren(subNode.line).join('');
+	}
+	
+	// ファイルID、更新日時を生成します
+	map['ファイルID'] = "urn:uuid:${UUID.randomUUID()}";
+	map['更新日時'] = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date());
+	
+	// スタイルシートリストを生成します
+	List styleList = [];
+	new File(config.outDir, 'item/style').listFiles().each { File styleFile ->
+		styleList << """<item media-type="text/css" id="${FilenameUtils.getBaseName(styleFile.name)}" href="style/${styleFile.name}"/>""";
+	}
+	map['スタイルシートリスト'] = styleList.join("\n");
+	
+	// 画像リストを生成します
+	List imageList = [];
+	new File(config.outDir, 'item/image').listFiles().each { File imageFile ->
+		if (imageFile.name != 'cover.jpg') imageList << """<item media-type="image/${FilenameUtils.getExtension(imageFile.name)}"  id="${FilenameUtils.getBaseName(imageFile.name)}" href="image/${imageFile.name}"/>""";
+	}
+	map['画像リスト'] = imageList.join("\n");
+	
+	// 内容リストを生成します
+	List xhtmlList = [];
+	config.tgtDir.listFiles().each { File txtFile ->
+		if (FilenameUtils.getExtension(txtFile.name) == 'txt'){
+			xhtmlList << """<item media-type="application/xhtml+xml" id="${FilenameUtils.getBaseName(txtFile.name)}" href="xhtml/${FilenameUtils.getBaseName(txtFile.name)}.xhtml"/>"""
+		}
+	}
+	map['内容リスト'] = xhtmlList.join("\n");
+	
+	// 構成リストを生成します
+	List spineList = [];
+	boolean flg = true;
+	String pageSpread = ''' properties="page-spread-left"''';
+	config.tgtDir.listFiles().each { File txtFile ->
+		if (FilenameUtils.getExtension(txtFile.name) == 'txt'){
+			spineList << """<itemref linear="yes" idref="${FilenameUtils.getBaseName(txtFile.name)}"${pageSpread}/>""";
+			if (flg){
+				flg = false;
+				pageSpread = '';
+			}
+		}
+	}
+	map['構成リスト'] = spineList.join("\n");
+	return map;

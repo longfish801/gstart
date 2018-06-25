@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="style.css" rel="stylesheet" type="text/css">
+<title>WashTxt</title>
+</head>
+<body>
+
+<h1>WashTxt</h1>
+<div class="subhead">《目次》</div>
+<ul class="idx">
+<li><a href="#id1">概要</a></li>
+<li><a href="#id3">使い方</a></li>
+</ul>
+
+<h2><a name="id1">概要</a></h2>
+
+<p>　washscrライブラリを利用して、文字列の変換を実施します。<br>
+　複数個の固定文字列もしくは正規表現による一括置換ができます。<br>
+　WashScr記法によるスクリプトに基づく変換ができます。</p>
+
+<h2><a name="id3">使い方</a></h2>
+
+<p>　処理方法をラジオボタンから選択し、それに応じて上のテキストエリアに処理内容を記述してください。</p>
+
+<ol>
+<li>「置換(固定)」を選択時は、タブ区切りで検索対象の文字列、置換後の文字列を記述してください。<br>
+改行区切りで複数個を記述すれば、一括して置換します。</li>
+<li>「置換(正規表現)」を選択時は、タブ区切りで検索対象の文字列、置換後の文字列を正規表現で記述してください。<br>
+改行区切りで複数個を記述すれば、一括して置換します。</li>
+<li>「WashScr」を選択時は、WashScr記法によるスクリプトを記述してください。<br>
+WashScr記法については<a href="https://longfish801.github.io/washscr/">washscr</a>を参照願います。<br>
+なお、先頭行に宣言は不要です。自動的に「#! washscr WashTxtApplication」を付与します。</li>
+</ol>
+
+<p>　処理対象の文字列を下のテキストエリアに記述してください。<br>
+　「変換」ボタンをクリックすると、変換結果をテキストダイアログに表示します。</p>
+
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+#! clmap EPUB本文
+
+## map div
+# closure 結語
+	return """<div class="align-end">${lowers.join('')}</div>""";
+
+## map inline
+# closure 外字
+	return """<img class="gaiji" src="../image/${attrs[0]}.png" alt=""/>""";
