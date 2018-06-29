@@ -36,6 +36,7 @@ import io.github.longfish801.shared.lang.ExistResource;
 import io.github.longfish801.shared.util.ScriptHelper;
 import io.github.longfish801.yakumo.YmoScript;
 import io.github.longfish801.yakumo.YmoDocument;
+import io.github.longfish801.yakumo.bltxt.BLtxt;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -216,18 +217,24 @@ class YakumoApplication extends FreeSizeApplication implements Initializable {
 				controller.status.text = '変換中です。';
 			}
 			
+			// 事前整形スクリプトによる変換結果を返すクロージャです
+			Closure washText = { String targetText ->
+				YmoScript ymoScript = new YmoScript();
+				ymoScript.configure('_bltxt');
+				return ymoScript.engine.washscr.wash(targetText);
+			}
+			
 			// テキストを変換します
-			YmoScript ymoScript = new YmoScript('_html');
 			String result = '';
 			switch (methodType.selectedToggle.id){
 				case methodTypeWash.id:
-					result = ymoScript.wash(targetText.text);
+					result = washText.call(targetText.text);
 					break;
 				case methodTypeXmlize.id:
-					result = ymoScript.bltxt(ymoScript.wash(targetText.text)).toXml();
+					result = new BLtxt(washText.call(targetText.text)).toXml();
 					break;
 				case methodTypeHtmlize.id:
-					result = ymoScript.convert(targetText.text);
+					result = YmoScript.convert(['_bltxt', '_html'], targetText.text);
 					break;
 				default:
 					throw new InternalError("処理方法が選択されていません。");
