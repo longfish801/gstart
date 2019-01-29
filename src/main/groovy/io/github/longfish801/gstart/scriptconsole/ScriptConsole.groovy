@@ -19,14 +19,14 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.event.ActionEvent;
-import io.github.longfish801.yakumo.clmap.Clinfo;
+import io.github.longfish801.clmap.Clinfo;
 import io.github.longfish801.gstart.guiparts.application.FreeSizeApplication;
 import io.github.longfish801.gstart.guiparts.dialog.FxDialog;
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfo;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfoFile;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * スクリプト実行コンソールです。

@@ -4,10 +4,10 @@
  * Copyright (C) io.github.longfish801 All Rights Reserved.
  */
 
-import io.github.longfish801.yakumo.clmap.Clmap;
+import io.github.longfish801.clmap.Clmap;
 import io.github.longfish801.gstart.GstartBuilder;
 import io.github.longfish801.gstart.guiparts.dialog.SwingExceptionDialog;
-import io.github.longfish801.shared.lang.ExistResource;
+import io.github.longfish801.shared.ExchangeResource;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.UIManager;
@@ -34,7 +34,7 @@ LOG.info('System Properties={}', System.getProperties().toString());
 
 try {
 	// クロージャマップを作成します
-	Clmap clmap = new Clmap(new ExistResource(GstartBuilder.class).get('build.tpac'));
+	Clmap clmap = new Clmap(ExchangeResource.url(GstartBuilder.class, 'build.tpac'));
 	
 	// 各機能を設定します
 	GstartBuilder builder = new GstartBuilder();

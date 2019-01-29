@@ -9,8 +9,7 @@ import groovy.util.logging.Slf4j;
 import java.awt.Image;
 import java.awt.TrayIcon;
 import javax.imageio.ImageIO;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ExchangeResource;
 
 /**
  * トレイアイコンを取得します。<br>
@@ -21,7 +20,7 @@ import io.github.longfish801.shared.util.ClassSlurper;
 @Slf4j('LOG')
 class AppTrayIcon {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(AppTrayIcon.class);
+	static final ConfigObject cnst = ExchangeResource.config(AppTrayIcon.class);
 	/** トレイアイコン */
 	static TrayIcon trayIcon = null;
 	
@@ -31,7 +30,7 @@ class AppTrayIcon {
 	 */
 	static TrayIcon getIcon() {
 		if (trayIcon == null){
-			URL url = new ExistResource(AppTrayIcon.class).get(constants.extension);
+			URL url = ExchangeResource.url(AppTrayIcon.class, cnst.extension);
 			trayIcon = new TrayIcon(ImageIO.read(url));
 		}
 		return trayIcon;

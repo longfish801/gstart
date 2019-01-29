@@ -6,7 +6,7 @@
 package io.github.longfish801.gstart.guiparts.menu;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.shared.util.ClassDirectory;
+import io.github.longfish801.shared.PackageDirectory;
 import spock.lang.Specification;
 
 /**
@@ -17,7 +17,7 @@ import spock.lang.Specification;
 @Slf4j('LOG')
 class MenuInfoFileSpec extends Specification {
 	/** ファイル入出力のテスト用フォルダ */
-	private static final File testDir = new ClassDirectory('src/test/resources').getDeepDir(MenuInfoFileSpec.class);
+	static final File testDir = PackageDirectory.deepDir('src/test/resources', MenuInfoFileSpec.class);
 	
 	def '最上位のメニュー情報のためのコンストラクタ'(){
 		given:

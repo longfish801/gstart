@@ -6,11 +6,11 @@
 package io.github.longfish801.gstart.taskexecutor;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.yakumo.clmap.Clinfo;
-import io.github.longfish801.shared.lang.ArgmentChecker;
+import io.github.longfish801.clmap.Clinfo;
+import io.github.longfish801.shared.ArgmentChecker;
 import io.github.longfish801.gstart.taskexecutor.notice.NoticeTask;
 import io.github.longfish801.gstart.taskexecutor.notice.NoticeTaskCaller;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ExchangeResource;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -25,7 +25,7 @@ import org.apache.commons.io.FileUtils;
 @Slf4j('LOG')
 class TaskExecutor extends NoticeTaskCaller {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(TaskExecutor.class);
+	static final ConfigObject cnst = ExchangeResource.config(TaskExecutor.class);
 	/** GroovyShell */
 	static GroovyShell shell = new GroovyShell(TaskExecutor.class.classLoader);
 	/** タスクの実行失敗時に実行するクロージャ */
@@ -54,7 +54,7 @@ class TaskExecutor extends NoticeTaskCaller {
 		
 		// クラスパスとするフォルダ一覧を作成します
 		List<File> paths = [];
-		constants.classpath.dirs.each { String path ->
+		cnst.classpath.dirs.each { String path ->
 			File dir = new File(file.parentFile, path);
 			if (dir.isDirectory()) paths << dir;
 		}
@@ -63,7 +63,7 @@ class TaskExecutor extends NoticeTaskCaller {
 		for (File path in paths){
 			shell.classLoader.addURL(path.toURL());
 			if (path.isDirectory()){
-				List fileList = FileUtils.listFiles(file.parentFile, constants.classpath.extensions as String[], true);
+				List fileList = FileUtils.listFiles(file.parentFile, cnst.classpath.extensions as String[], true);
 				fileList.each { shell.classLoader.addURL(it.toURL()) }
 			}
 		}

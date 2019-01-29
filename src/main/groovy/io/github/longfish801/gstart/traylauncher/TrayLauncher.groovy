@@ -16,11 +16,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import io.github.longfish801.yakumo.clmap.Clinfo;
+import io.github.longfish801.clmap.Clinfo;
 import io.github.longfish801.gstart.guiparts.icon.AppTrayIcon;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfo;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfoFile;
-import io.github.longfish801.shared.lang.ArgmentChecker;
+import io.github.longfish801.shared.ArgmentChecker;
 import org.apache.commons.lang3.StringUtils;
 
 /**

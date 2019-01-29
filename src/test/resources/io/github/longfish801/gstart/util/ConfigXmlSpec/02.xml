@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <group>
+    <set>
+      <key>
+        <entry type="java.lang.String">some1</entry>
+      </key>
+      <val>
+        <entry type="null" />
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some2</entry>
+      </key>
+      <val>
+        <entry type="byte">-86</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some3</entry>
+      </key>
+      <val>
+        <entry type="short">123</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some4</entry>
+      </key>
+      <val>
+        <entry type="int">45</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some5</entry>
+      </key>
+      <val>
+        <entry type="long">123456</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some6</entry>
+      </key>
+      <val>
+        <entry type="float">12.3</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some7</entry>
+      </key>
+      <val>
+        <entry type="double">45.6</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some8</entry>
+      </key>
+      <val>
+        <entry type="char">c</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some9</entry>
+      </key>
+      <val>
+        <entry type="boolean">true</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some10</entry>
+      </key>
+      <val>
+        <entry type="java.math.BigDecimal">78.9</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">some11</entry>
+      </key>
+      <val>
+        <entry type="java.lang.String">abc</entry>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">list</entry>
+      </key>
+      <val>
+        <list>
+          <entry type="int">1</entry>
+          <entry type="java.lang.String">a</entry>
+          <entry type="boolean">true</entry>
+          <entry type="null" />
+        </list>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">list2</entry>
+      </key>
+      <val>
+        <list />
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">map</entry>
+      </key>
+      <val>
+        <map>
+          <set>
+            <key>
+              <entry type="java.lang.String">a</entry>
+            </key>
+            <val>
+              <entry type="null" />
+            </val>
+          </set>
+          <set>
+            <key>
+              <entry type="int">2</entry>
+            </key>
+            <val>
+              <entry type="java.lang.String">b</entry>
+            </val>
+          </set>
+        </map>
+      </val>
+    </set>
+    <set>
+      <key>
+        <entry type="java.lang.String">map2</entry>
+      </key>
+      <val>
+        <map />
+      </val>
+    </set>
+  </group>
+</config>

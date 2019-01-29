@@ -6,8 +6,8 @@
 package io.github.longfish801.gstart.taskexecutor;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.yakumo.clmap.Clinfo;
-import io.github.longfish801.yakumo.clmap.Clmap;
+import io.github.longfish801.clmap.Clinfo;
+import io.github.longfish801.clmap.Clmap;
 import io.github.longfish801.gstart.taskexecutor.notice.NoticeTask;
 import spock.lang.Specification;
 import spock.lang.Timeout;

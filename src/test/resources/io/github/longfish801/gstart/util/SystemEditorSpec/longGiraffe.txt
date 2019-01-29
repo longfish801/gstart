@@ -1,0 +1,1 @@
+C:\Program Files\WZ EDITOR 9\wzeditor.exe /j123 test.txt

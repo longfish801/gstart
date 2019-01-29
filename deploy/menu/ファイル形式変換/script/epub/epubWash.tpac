@@ -1,0 +1,18 @@
+#! washscr epub化のための事前整形の拡張
+#> slice 空白行区切り
+
+#>> reprex 青空文庫形式のルビ
+｜([^《]+)《([^》]+)》	【｜ルビ：$2】$1【ルビ｜】
+([\x{2E80}-\x{2FDF}\x{3005}\x{3007}\x{3021}-\x{3029}\x{3038}-\x{303B}\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}\x{20000}-\x{2FFFF}]+)《([^》]+)》	【｜ルビ：$2】$1【ルビ｜】
+
+---
+// 先頭が「//」で始まる行に囲まれた箇所は置換処理の対象としません。
+if (config.idx == 0) config.inRange = false;
+if (lines.size() == 0) return false;
+if (!config.inRange){
+	if (lines[0].startsWith('//') && !lines[lines.size() - 1].startsWith('//')) config.inRange = true;
+} else {
+	if (lines[lines.size() - 1].startsWith('//')) config.inRange = false;
+}
+return (lines[lines.size() - 1].startsWith('//'))? config.inRange : !config.inRange;
+

@@ -6,8 +6,8 @@
 package io.github.longfish801.gstart.guiparts.menu;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.shared.ExchangeResource;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -23,7 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 @Slf4j('LOG')
 class MenuInfoFile extends MenuInfo {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(MenuInfoFile.class);
+	static final ConfigObject cnst = ExchangeResource.config(MenuInfoFile.class);
 	/** メニューに関連付けするファイル */
 	File file = null;
 	
@@ -31,7 +31,7 @@ class MenuInfoFile extends MenuInfo {
 	 * 最上位のメニュー情報のためのコンストラクタ。
 	 * @param key 識別子
 	 * @param dir メニュー作成対象のルートとなるフォルダ
-	 * @exception IOException フォルダを参照できません。
+	 * @throws IOException フォルダを参照できません。
 	 */
 	MenuInfoFile(File dir){
 		LOG.debug("最上位のメニュー作成：dir={}", dir);
@@ -77,7 +77,7 @@ class MenuInfoFile extends MenuInfo {
 		switch (elem){
 			case { it.isDirectory() }:
 				// 対象がフォルダの場合、フォルダ内にデフォルトスクリプトがあるか確認します
-				File mainFile = elem.listFiles().find { it.isFile() && it.name == constants.script.defaultName };
+				File mainFile = elem.listFiles().find { it.isFile() && it.name == cnst.script.defaultName };
 				if (mainFile != null){
 					// デフォルトスクリプトがあれば、フォルダ名をメニュー名としたメニューフォルダを作成します
 					parentMenu << new MenuInfoFile(elem.name, mainFile);
@@ -93,7 +93,7 @@ class MenuInfoFile extends MenuInfo {
 				break;
 			case { it.isFile() }:
 				// 対象がファイルの場合、ファイル名がパターンを満たすなら、メニュー項目を作成します
-				if (FilenameUtils.wildcardMatch(elem.name, constants.script.pattern)){
+				if (FilenameUtils.wildcardMatch(elem.name, cnst.script.pattern)){
 					parentMenu << new MenuInfoFile(FilenameUtils.removeExtension(elem.name), elem);
 					isThereMenu = true;
 				}

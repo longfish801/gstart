@@ -14,8 +14,8 @@ import javafx.scene.control.DialogPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.shared.ExchangeResource;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * サイズを変更可能で、再表示時に前回表示時と同じ大きさと位置で表示するダイアログです。<br>

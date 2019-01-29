@@ -1,0 +1,41 @@
+#! clmap サイト用のHTML化
+#> dec
+import groovy.swing.SwingBuilder;
+
+import java.awt.Desktop;
+
+import io.github.longfish801.bltxt.BLtxtUtil;
+import io.github.longfish801.bltxt.BLtxtUtil.BLtxtUtilException;
+import io.github.longfish801.gstart.guiparts.dialog.SwingExceptionDialog;
+import io.github.longfish801.gstart.util.ClassConfig;
+import io.github.longfish801.washscr.TextWasher;
+
+#> map main
+#>> args
+	SwingBuilder swing, File curDir, ClassConfig clzConfig
+#>> closure 処理対象のファイルを開く
+	Desktop.getDesktop().open(new File(curDir, 'site/input.txt'));
+
+#>> closure HTML化
+	swing.edt { swing.procStatus.text = "処理を開始します。\n" }
+	swing.doOutside {
+		String htmlStr = '';
+		try {
+			String text = new File(curDir, 'site/input.txt').getText('UTF-8');
+			BLtxtUtil util = new BLtxtUtil('html');
+			util.washer.merge(TextWasher.getInstance(new File(curDir, 'site/washAdd.tpac')));
+			util.clmap.merge(new Clmap(new File(curDir, 'site/htmlizeAdd.tpac')));
+			htmlStr = BLtxtUtil.applyTemplate('html', 'template.txt', util.convert(text) as Map);
+		} catch (exc){
+			clmap.LOG.error("HTML化時に問題が発生しました。", exc);
+			File errorFile = new File(curDir, 'site/error.log');
+			errorFile.setText(exc.text);
+			if (errorFile.exists()) Desktop.getDesktop().open(errorFile);
+			if (errorFile.exists()) errorFile.delete();
+			new SwingExceptionDialog().show(swing.mainFrame, exc, "HTML化時に問題が発生しました。詳細はログファイルを参照してください。");
+		}
+		File outFile = new File(curDir, 'site/output/output.html');
+		outFile.setText(htmlStr, 'UTF-8');
+		swing.procStatus.text += "処理が完了しました。ファイルを開きます。\n";
+		Desktop.getDesktop().open(outFile);
+	}

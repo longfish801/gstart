@@ -6,7 +6,7 @@
 package io.github.longfish801.gstart.taskexecutor;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.yakumo.clmap.Clinfo;
+import io.github.longfish801.clmap.Clinfo;
 import io.github.longfish801.gstart.taskexecutor.notice.NoticeTask;
 
 /**

@@ -12,9 +12,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ListView;
 import javafx.stage.Window;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.shared.ExchangeResource;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * 選択ダイアログです。<br>
@@ -27,7 +27,7 @@ class FxListViewDialog extends FxFreeSizeDialog implements Initializable {
 	/** 設定値 */
 	static ClassConfig config = ClassConfig.newInstance(FxListViewDialog.class);
 	/** FXMLLoaderの生成に使用するリソース */
-	static URL fxmlResource = new ExistResource(FxListViewDialog.class).get('.fxml');
+	static URL fxmlResource = ExchangeResource.url(FxListViewDialog.class, '.fxml');
 	/** 選択リストビュー */
 	@FXML ListView selectList;
 	

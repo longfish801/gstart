@@ -6,7 +6,7 @@
 package io.github.longfish801.gstart.taskexecutor.notice;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.shared.lang.ArgmentChecker;
+import io.github.longfish801.shared.ArgmentChecker;
 
 /**
  * 通知タスクを非同期実行するためのクラスです。

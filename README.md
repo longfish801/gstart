@@ -6,10 +6,10 @@
 
 ## 実行環境の作成
 
-　以下のコマンドで releaseフォルダ配下に実行環境が作成されます。
+　以下のコマンドで deployフォルダ配下に実行環境が作成されます。
 
 ~~~
-gradle release
+gradle deploy
 ~~~
 
 ## Grapeのログ出力を強化
@@ -38,7 +38,7 @@ createExe {
 }
 ~~~
 
-　gradle releaseを実行します。  
+　gradle deployを実行します。  
 　生成された gstart.exeを介してスクリプトを実行します。  
 　たとえば WashTxtを実行する場合、以下のコマンドを実行します。  
 　stdout.logに Grapeのログが出力されます。
@@ -51,7 +51,7 @@ gstart.exe menu\WashTxt\main.gvy > stdout.log
 
 　menuフォルダ配下のスクリプトを groovyコマンドで実行する例を示します。  
 　以下の例では Hello.gvyを実行しています。  
-　事前に gradle releaseの実行が必要となります。
+　事前に gradle deployの実行が必要となります。
 
 ~~~
 set CLASSPATH='.;lib/*;conf'

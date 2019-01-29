@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <group>
+    <set>
+      <key>
+        <entry type="java.lang.String">user</entry>
+      </key>
+      <val>
+        <group>
+          <set>
+            <key>
+              <entry type="java.lang.String">name</entry>
+            </key>
+            <val>
+              <entry type="java.lang.String">Yamada</entry>
+            </val>
+          </set>
+          <set>
+            <key>
+              <entry type="java.lang.String">blood</entry>
+            </key>
+            <val>
+              <entry type="char">B</entry>
+            </val>
+          </set>
+          <set>
+            <key>
+              <entry type="java.lang.String">is</entry>
+            </key>
+            <val>
+              <group>
+                <set>
+                  <key>
+                    <entry type="java.lang.String">programmer</entry>
+                  </key>
+                  <val>
+                    <entry type="boolean">true</entry>
+                  </val>
+                </set>
+                <set>
+                  <key>
+                    <entry type="java.lang.String">rich</entry>
+                  </key>
+                  <val>
+                    <entry type="boolean">false</entry>
+                  </val>
+                </set>
+              </group>
+            </val>
+          </set>
+          <set>
+            <key>
+              <entry type="java.lang.String">family</entry>
+            </key>
+            <val>
+              <list>
+                <entry type="java.lang.String">Alice</entry>
+                <entry type="java.lang.String">Ben</entry>
+                <entry type="java.lang.String">Cathy</entry>
+              </list>
+            </val>
+          </set>
+        </group>
+      </val>
+    </set>
+  </group>
+</config>
