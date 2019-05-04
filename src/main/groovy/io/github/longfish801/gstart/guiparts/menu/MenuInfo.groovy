@@ -5,7 +5,7 @@
  */
 package io.github.longfish801.gstart.guiparts.menu;
 
-import io.github.longfish801.shared.lang.ArgmentChecker;
+import io.github.longfish801.shared.ArgmentChecker;
 
 /**
  * メニューに関する情報を保持するクラスです。

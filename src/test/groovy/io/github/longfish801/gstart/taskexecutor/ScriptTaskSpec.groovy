@@ -8,7 +8,7 @@ package io.github.longfish801.gstart.taskexecutor;
 import groovy.util.logging.Slf4j;
 
 import io.github.longfish801.gstart.taskexecutor.notice.NoticeTask;
-import io.github.longfish801.shared.util.ClassDirectory;
+import io.github.longfish801.shared.PackageDirectory;
 import spock.lang.Specification;
 import spock.lang.Timeout;
 
@@ -21,7 +21,7 @@ import spock.lang.Timeout;
 @Slf4j('LOG')
 class ScriptTaskSpec extends Specification {
 	/** ファイル入出力のテスト用フォルダ */
-	private static final File testDir = new ClassDirectory('src/test/resources').getDeepDir(ScriptTaskSpec.class);
+	static final File testDir = PackageDirectory.deepDir('src/test/resources', ScriptTaskSpec.class);
 	/** 例外が発生したか否か */
 	private boolean isErr = false;
 	

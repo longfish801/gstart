@@ -18,8 +18,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Window;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.lang.ExistResource;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.shared.ExchangeResource;
 
 /**
  * 処理状況ダイアログです。
@@ -29,7 +29,7 @@ import io.github.longfish801.shared.lang.ExistResource;
 @Slf4j('LOG')
 class FxStatusDialog extends FxListViewDialog {
 	/** FXMLLoaderの生成に使用するリソース */
-	static URL fxmlResource = new ExistResource(FxStatusDialog.class).get('.fxml');
+	static URL fxmlResource = ExchangeResource.url(FxStatusDialog.class, '.fxml');
 	
 	/**
 	 * コンストラクタです。

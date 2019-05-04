@@ -9,8 +9,7 @@ import groovy.util.logging.Slf4j;
 import java.awt.Image;
 import javafx.scene.image.Image as ImageFx;
 import javax.imageio.ImageIO;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ExchangeResource;
 
 /**
  * アイコン画像を取得します。<br>
@@ -21,7 +20,7 @@ import io.github.longfish801.shared.util.ClassSlurper;
 @Slf4j('LOG')
 class AppIcon {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(AppIcon.class);
+	static final ConfigObject cnst = ExchangeResource.config(AppIcon.class);
 	/** アイコン画像 */
 	static Image icon = null;
 	/** JavaFX向けのアイコン画像 */
@@ -33,7 +32,7 @@ class AppIcon {
 	 */
 	static Image getIcon(){
 		if (icon == null){
-			URL url = new ExistResource(AppIcon.class).get(constants.extension);
+			URL url = ExchangeResource.url(AppIcon.class, cnst.extension);
 			icon = ImageIO.read(url);
 		}
 		return icon;
@@ -45,7 +44,7 @@ class AppIcon {
 	 */
 	static ImageFx getFxIcon(){
 		if (fxIcon == null){
-			URL url = new ExistResource(AppIcon.class).get(constants.extension);
+			URL url = ExchangeResource.url(AppIcon.class, cnst.extension);
 			fxIcon = new ImageFx(url.toString());
 		}
 		return fxIcon;

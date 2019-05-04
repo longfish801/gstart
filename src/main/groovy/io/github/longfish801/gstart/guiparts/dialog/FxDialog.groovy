@@ -7,7 +7,7 @@ package io.github.longfish801.gstart.guiparts.dialog;
 
 import groovy.util.logging.Slf4j;
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ExchangeResource;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import javafx.application.Platform;
@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 @Slf4j('LOG')
 class FxDialog {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(FxDialog.class);
+	static final ConfigObject cnst = ExchangeResource.config(FxDialog.class);
 	
 	/**
 	 * 情報ダイアログを表示します。
@@ -38,7 +38,7 @@ class FxDialog {
 		Platform.runLater {
 			try {
 				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.title = constants.dialogTitle.information;
+				alert.title = cnst.dialogTitle.information;
 				alert.headerText = message;
 				alert.contentText = null;
 				(alert.dialogPane.scene.window as Stage).icons.add(AppIcon.fxIcon);
@@ -61,7 +61,7 @@ class FxDialog {
 		Platform.runLater {
 			try {
 				Alert alert = new Alert(AlertType.WARNING);
-				alert.title = constants.dialogTitle.warning;
+				alert.title = cnst.dialogTitle.warning;
 				alert.headerText = message;
 				alert.contentText = null;
 				(alert.dialogPane.scene.window as Stage).icons.add(AppIcon.fxIcon);
@@ -88,7 +88,7 @@ class FxDialog {
 			String inputed = '';
 			try {
 				TextInputDialog dialog = new TextInputDialog(defaultValue);
-				dialog.title = constants.dialogTitle.textInput;
+				dialog.title = cnst.dialogTitle.textInput;
 				dialog.headerText = caption;
 				dialog.contentText = null;
 				dialog.editor.font = Font.font('Yu Gothic UI Regular', 12);

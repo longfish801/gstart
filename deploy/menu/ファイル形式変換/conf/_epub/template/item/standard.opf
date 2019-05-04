@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" xml:lang="ja" unique-identifier="unique-id">
+
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+<!-- 作品名 -->
+<dc:title id="title"><%= head['作品名'] %></dc:title>
+<meta refines="#title" property="file-as"><%= head['作品名ヨミ'] %></meta>
+
+<!-- 著者名 -->
+<dc:creator id="creator01"><%= head['著者名'] %></dc:creator>
+<meta refines="#creator01" property="role" scheme="marc:relators">aut</meta>
+<meta refines="#creator01" property="file-as"><%= head['著者名ヨミ'] %></meta>
+<meta refines="#creator01" property="display-seq">1</meta>
+
+<!-- 発行元 -->
+<dc:publisher id="publisher"><%= head['発行元'] %></dc:publisher>
+<meta refines="#publisher" property="file-as"><%= head['発行元ヨミ'] %></meta>
+
+<!-- 言語 -->
+<dc:language>ja</dc:language>
+
+<!-- ファイルID -->
+<dc:identifier id="unique-id"><%= head['ファイルID'] %></dc:identifier>
+
+<!-- 更新日 -->
+<meta property="dcterms:modified"><%= head['更新日時'] %></meta>
+
+</metadata>
+
+<manifest>
+
+<!-- navigation -->
+<item media-type="application/xhtml+xml" id="toc" href="navigation-documents.xhtml" properties="nav"/>
+
+<!-- style -->
+<%= head['スタイルシートリスト'] %>
+
+<!-- image -->
+<item media-type="image/jpeg" id="cover" href="image/cover.jpg" properties="cover-image"/>
+<%= head['画像リスト'] %>
+
+<!-- xhtml -->
+<item media-type="application/xhtml+xml" id="p-cover" href="xhtml/p-cover.xhtml"/>
+<item media-type="application/xhtml+xml" id="p-title" href="xhtml/p-title.xhtml"/>
+<item media-type="application/xhtml+xml" id="p-caution" href="xhtml/p-caution.xhtml"/>
+<item media-type="application/xhtml+xml" id="p-toc" href="xhtml/p-toc.xhtml"/>
+<%= head['内容リスト'] %>
+<item media-type="application/xhtml+xml" id="p-addition" href="xhtml/p-addition.xhtml"/>
+<item media-type="application/xhtml+xml" id="p-colophon" href="xhtml/p-colophon.xhtml"/>
+
+</manifest>
+
+<spine page-progression-direction="rtl">
+
+<itemref linear="yes" idref="p-cover" properties="page-spread-left"/>
+<itemref linear="yes" idref="p-title" properties="page-spread-left"/>
+<itemref linear="yes" idref="p-caution"/>
+<itemref linear="yes" idref="p-toc"/>
+<%= head['構成リスト'] %>
+<itemref linear="yes" idref="p-addition"/>
+<itemref linear="yes" idref="p-colophon"/>
+
+</spine>
+
+</package>

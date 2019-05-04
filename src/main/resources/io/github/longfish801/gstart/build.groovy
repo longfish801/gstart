@@ -4,10 +4,11 @@
  * Copyright (C) io.github.longfish801 All Rights Reserved.
  */
 
-import io.github.longfish801.yakumo.clmap.Clmap;
+import io.github.longfish801.clmap.Clmap;
+import io.github.longfish801.clmap.ClmapServer;
 import io.github.longfish801.gstart.GstartBuilder;
 import io.github.longfish801.gstart.guiparts.dialog.SwingExceptionDialog;
-import io.github.longfish801.shared.lang.ExistResource;
+import io.github.longfish801.shared.ExchangeResource;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.UIManager;
@@ -34,8 +35,7 @@ LOG.info('System Properties={}', System.getProperties().toString());
 
 try {
 	// クロージャマップを作成します
-	Clmap clmap = new Clmap(new ExistResource(GstartBuilder.class).get('build.tpac'));
-	
+	Clmap clmap = new ClmapServer().soak(ExchangeResource.url(GstartBuilder.class, 'build.tpac')).getAt('clmap:gstart');
 	// 各機能を設定します
 	GstartBuilder builder = new GstartBuilder();
 	builder.gstart {
@@ -54,7 +54,7 @@ try {
 			class: 'io.github.longfish801.gstart.traylauncher.TrayLauncher',
 			initial: {
 				setActionClinfo clmap.cl('traylauncher');
-				setActionDoubleClicked 'menu#console';
+				setActionDoubleClicked 'menu#showconsole';
 				setPopupMenu(
 					menuItem(name: '終了', combi: 'gstart#stop'),
 					menu(name:'参照', items: [
@@ -64,7 +64,7 @@ try {
 					]),
 					menuSeparator(),
 					menuItem(name: '再読込', combi: 'gstart#reload'),
-					menuItem(name: 'コンソール', combi: 'menu#console'),
+					menuItem(name: 'コンソール', combi: 'menu#showconsole'),
 					menuItem(name: 'ヘルプ', combi: 'menu#help'),
 					menuSeparator(),
 					menuScript(dir: new File('menu'), combi: 'script#run')
@@ -79,14 +79,14 @@ try {
 			initial: {
 				setActionClinfo clmap.cl('scriptconsole');
 				setScriptDir new File('menu');
-				setActionClose 'gstart#stop';
+				setActionClose 'menu#stopconsole';
 				setActionDoubleClicked 'script#run';
 				setMenuBar(
 					menu(name:'ファイル', items: [
 						menuItem(name: '実行', combi: 'script#run', accelerator: 'Ctrl+Enter'),
 						menuItem(name: 'エディタで開く', combi: 'script#editor'),
 						menuItem(name: 'GroovyConsoleで開く', combi: 'script#console'),
-						menuItem(name: '終了', combi: 'gstart#stop', accelerator: 'Ctrl+W')
+						menuItem(name: '終了', combi: 'menu#stopconsole', accelerator: 'Ctrl+W')
 					]),
 					menu(name:'編集', items: [
 						menuItem(name: '再読込', combi: 'gstart#reload', accelerator: 'Ctrl+R'),
@@ -108,8 +108,8 @@ try {
 		);
 	}
 	
-	clmap.config.funcs = builder;
-	clmap.config.args = args;
+	clmap.properties['funcs'] = builder;
+	clmap.properties['args'] = args;
 	try {
 		clmap.cl('gstart#start').call();
 	} catch (Throwable exc){

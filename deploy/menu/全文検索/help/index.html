@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>全文検索</title>
+</head>
+<body>
+
+<header>
+<h1>全文検索</h1>
+<ul>
+<li><a href="#id2_3" class="list-group-item">使い方</a></li>
+<li><a href="#id2_4" class="list-group-item">環境変数</a></li>
+</ul>
+</header>
+
+<article>
+<h2><a name="id2_3"></a>使い方</h2>
+
+<p>　「検索語」に検索対照の語を、正規表現で入力してください。</p>
+
+<p>　「フォルダ」に検索対象のファイルが格納されているフォルダを指定してください。<br/>
+　&quot;?&quot;は任意の一文字とみなします。<br/>
+　&quot;*&quot;は任意の文字列とみなします。ただしサブフォルダは含みません。<br/>
+　&quot;**&quot;はサブフォルダまで含めた任意の文字列とみなします。</p>
+
+<p>　「ファイル」に検索対象のファイル名を指定してください。<br/>
+　&quot;?&quot;は任意の一文字とみなします。<br/>
+　&quot;*&quot;は任意の文字列とみなします。</p>
+
+<p>　「検索」ボタンを押下すると検索処理を開始します。<br/>
+　検索語とマッチする文字列を含むファイルへのパスと、マッチした行番号を表示します。<br/>
+　検索結果をダブルクリックすると、該当行をエディタで表示します。</p>
+
+<h2><a name="id2_4"></a>環境変数</h2>
+
+<p>　検索結果をダブルクリック時、エディタを起動し、行番号へジャンプします。<br/>
+　行番号へのジャンプを有効にするには、事前に以下の準備が必要です。</p>
+
+<ul>
+<li>表示位置の行番号を指定可能なエディタがインストールされていること。</li>
+<li>エディタの起動コマンドを環境変数に設定しておくこと。</li>
+</ul>
+
+<p>　環境変数&quot;EDITOR&quot;に、エディタ起動用のコマンドを設定します。<br/>
+　設定されていない場合は、拡張子に対応するアプリケーションで起動し、行番号の指定は無効となります。</p>
+
+<p>　WZ EDITOR 10の設定値の例は以下となります。<br/>
+　埋め込み変数&quot;${postion}&quot;が行番号、&quot;${path}&quot;が対象ファイルへのパスとなります。</p>
+
+<aside class="panel panel-primary">
+<div class="panel-body">
+<p>C:\Program Files\WZ EDITOR 10\wzeditor.exe /j${position} ${path}</p>
+</div>
+</aside>
+
+</article>
+
+<footer>
+<hr/>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+#! clmap テキスト変換
+
+#> map default
+#>> dec
+import io.github.longfish801.gstart.guiparts.dialog.FxDialog;
+
+#>> args
+	String text
+
+#>> closure 重複行を除去しソート
+	String[] elems = text.split("\n+");
+	Map map = [:];
+	elems.each { map[it] = '' }	// マップに格納することで重複を除去します
+	List sortedList = map.keySet().sort();
+	return sortedList.join("\n") + "\n";
+
+#>> closure 単語の登場回数をカウント
+	String[] elems = text.split("\n+");
+	Map map = [:];
+	elems.each { map[it] = (map.containsKey(it))? map[it] = ++ map[it] : 1 }	// 登場回数をカウントします
+	Map sorted = map.sort { kv1, kv2 -> return kv2.value - kv1.value }	// 値の降順でソートします
+	List list = [];
+	sorted.each { list << "${it.key}\t${it.value}" }
+	return list.join("\n") + "\n";
+
+#>> closure 逆順に並べ替え
+	return text.split("\n").reverse().join("\n") + "\n";
+
+#>> closure 特定文字列を含む行を抽出
+	String[] elems = text.split("\n+");
+	String keyword = FxDialog.textInputDialog('抽出したい行に含む文字列（固定）を指定してください。', '');
+	List list = (keyword.empty)? [] : elems.findAll { it.indexOf(keyword) >= 0 };
+	return list.join("\n") + "\n";
+
+#>> closure 特定文字列を含まない行を抽出
+	String[] elems = text.split("\n+");
+	String keyword = FxDialog.textInputDialog('抽出したい行に含まない文字列（固定）を指定してください。', '');
+	List list = (keyword.empty)? [] : elems.findAll { it.indexOf(keyword) < 0 };
+	return list.join("\n") + "\n";
+
+#>> closure キー別の合計数を算出
+	String[] elems = text.split("\n+");
+	Map map = [:];
+	elems.each { String elem ->
+		String key = elem.substring(0, elem.lastIndexOf("\t"));
+		int count = Integer.parseInt(elem.substring(elem.lastIndexOf("\t") + 1));
+		map[key] = (map.containsKey(key))? map[key] + count : count;
+	}
+	Map sorted = map.sort { kv1, kv2 -> return kv2.value - kv1.value }	// 値の降順でソートします
+	List list = [];
+	sorted.each { list << "${it.key}\t${it.value}" }
+	return list.join("\n") + "\n";

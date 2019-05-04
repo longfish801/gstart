@@ -6,8 +6,9 @@
 package io.github.longfish801.gstart.taskexecutor;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.yakumo.clmap.Clinfo;
-import io.github.longfish801.yakumo.clmap.Clmap;
+import io.github.longfish801.clmap.Clinfo;
+import io.github.longfish801.clmap.Clmap;
+import io.github.longfish801.clmap.ClmapServer;
 import io.github.longfish801.gstart.taskexecutor.notice.NoticeTask;
 import spock.lang.Specification;
 import spock.lang.Timeout;
@@ -24,13 +25,13 @@ class ClinfoTaskSpec extends Specification {
 		given:
 		String clmapText = '''\
 			#! clmap testRun001
-			## map run001
-			# closure
+			#> map run001
+			#>> closure
 			return 'This is TEST001';
 		'''.stripIndent();
 		TaskExecutor executor = new TaskExecutor();
 		executor.setShell(new GroovyShell());
-		Clmap clmap = new Clmap(clmapText);
+		Clmap clmap = new ClmapServer().soak(clmapText).getAt('clmap:testRun001');
 		ClinfoTask task = new ClinfoTask(clmap.cl('run001'));
 		
 		when:
@@ -46,13 +47,13 @@ class ClinfoTaskSpec extends Specification {
 		given:
 		String clmapText = '''\
 			#! clmap testRun002
-			## map run002
-			# closure
+			#> map run002
+			#>> closure
 			throw new Exception('This is TEST002');
 		'''.stripIndent();
 		TaskExecutor executor = new TaskExecutor();
 		executor.setShell(new GroovyShell());
-		Clmap clmap = new Clmap(clmapText);
+		Clmap clmap = new ClmapServer().soak(clmapText).getAt('clmap:testRun002');
 		ClinfoTask task = new ClinfoTask(clmap.cl('run002'));
 		
 		when:

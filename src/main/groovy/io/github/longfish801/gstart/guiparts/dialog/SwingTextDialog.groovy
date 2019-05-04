@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 
 import io.github.longfish801.gstart.guiparts.ClipboardUtil;
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * 複数行の文字列を表示するためのダイアログです。<br>

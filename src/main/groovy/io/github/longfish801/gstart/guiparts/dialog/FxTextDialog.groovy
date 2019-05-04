@@ -14,9 +14,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import javafx.stage.Window;
 import io.github.longfish801.gstart.guiparts.ClipboardUtil;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.shared.ExchangeResource;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * テキストダイアログです。<br>
@@ -30,7 +30,7 @@ class FxTextDialog extends FxFreeSizeDialog implements Initializable {
 	/** 設定値 */
 	static ClassConfig config = ClassConfig.newInstance(FxTextDialog.class);
 	/** FXMLLoaderの生成に使用するリソース */
-	static URL fxmlResource = new ExistResource(FxTextDialog.class).get('.fxml');
+	static URL fxmlResource = ExchangeResource.url(FxTextDialog.class, '.fxml');
 	/** テキスト */
 	@FXML TextArea text;
 	

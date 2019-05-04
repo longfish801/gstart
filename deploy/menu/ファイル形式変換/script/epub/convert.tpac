@@ -1,0 +1,157 @@
+#! clmap epub形式ファイルの生成
+
+#> dec
+import groovy.swing.SwingBuilder;
+
+import java.awt.Desktop;
+
+import javax.swing.JOptionPane;
+
+import io.github.longfish801.bltxt.BLtxtUtil;
+import io.github.longfish801.bltxt.BLtxtUtil.BLtxtUtilException;
+import io.github.longfish801.clmap.Clmap;
+import io.github.longfish801.clmap.ClmapServer;
+import io.github.longfish801.gstart.guiparts.dialog.SwingExceptionDialog;
+import io.github.longfish801.gstart.guiparts.dialog.SwingFileDndDialog;
+import io.github.longfish801.gstart.util.ClassConfig;
+import io.github.longfish801.washscr.TextWasher;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
+#> map main
+#>> args
+	SwingBuilder swing, File curDir, ClassConfig clzConfig
+#>> prefix
+	File lastFile = new File(curDir, 'epub/last.txt');
+
+#>> closure epub化
+	swing.edt { swing.procStatus.text = "処理を開始します。\n" }
+	// 処理対象のファイルを選択します
+	List tgtDirs = new SwingFileDndDialog().showDialog(swing.mainFrame, "処理対象のフォルダをドラッグ＆ドロップしてください。");
+	if (tgtDirs.size() != 1 || !tgtDirs[0].isDirectory()){
+		JOptionPane.showMessageDialog(swing.mainFrame, "処理対象はフォルダをひとつのみ指定してください。", "エラー", JOptionPane.ERROR_MESSAGE);
+		return;
+	}
+	// 処理対象のフォルダを保存しておきます
+	clzConfig.epub.tgtDir = tgtDirs[0].absolutePath;
+	// epub化します
+	clmap.cl('control#convert').call(swing, tgtDirs[0], new File(curDir, 'epub/output'), curDir);
+
+#>> closure 再実行
+	swing.edt { swing.procStatus.text = "処理を開始します。\n" }
+	// 最後に選択したフォルダが格納されているか確認します
+	if (!clzConfig.isSet('epub')){
+		JOptionPane.showMessageDialog(swing.mainFrame, "初めての実行のため、再実行はできません。", "エラー", JOptionPane.ERROR_MESSAGE);
+		return;
+	}
+	// epubファイルを生成します
+	swing.doOutside {
+		clmap.cl('control#convert').call(swing, new File(clzConfig.epub.tgtDir), new File(curDir, 'epub/output'), curDir);
+	}
+
+#> map control
+#>> args
+	SwingBuilder swing, File tgtDir, File outDir, File curDir
+#>> closure convert
+	try {
+		// 出力フォルダを生成するか、すでにあれば空にしておきます
+		if (!outDir.exists()){
+			if (!outDir.mkdirs()) throw new IOException("一次出力フォルダの生成に失敗しました。path=${outDir.path}");
+		} else {
+			FileUtils.cleanDirectory(outDir);
+		}
+		
+		// mimetypeファイルを出力します
+		BLtxtUtil.copyTemplate('epub', 'mimetype', new File(outDir, 'mimetype'));
+		// META-INF/container.xmlファイルを出力します
+		BLtxtUtil.copyTemplate('epub', 'META-INF/container.xml', new File(outDir, 'META-INF/container.xml'));
+		// 各種フォルダを出力します
+		new File(outDir, 'item/style').mkdirs();
+		new File(outDir, 'item/image').mkdirs();
+		new File(outDir, 'item/xhtml').mkdirs();
+		// スタイルシートを出力します
+		List cssFnames = [ 'book-style', 'style-advance', 'style-check', 'style-reset', 'style-standard' ];
+		cssFnames.each {
+			BLtxtUtil.copyTemplate('epub', "item/style/${it}.css", new File(outDir, "item/style/${it}.css"));
+		}
+		// 対象フォルダにスタイルシート格納フォルダがあれば出力フォルダへコピーします
+		File tgtStyleDir = new File(tgtDir, 'style');
+		if (tgtStyleDir.exists()) FileUtils.copyDirectory(tgtStyleDir, new File(outDir, 'item/style'));
+		// 対象フォルダに画像ファイル格納フォルダがあれば出力フォルダへコピーします
+		File tgtImageDir = new File(tgtDir, 'image');
+		if (tgtImageDir.exists()) FileUtils.copyDirectory(tgtImageDir, new File(outDir, 'item/image'));
+		
+		// epub定義ファイルを参照します
+		File defFile = new File(tgtDir, 'define/epub.txt');
+		if (!defFile.exists()) throw new IOException("epub定義ファイルがありません。path=${defFile.path}");
+		BLtxtUtil utilDef = new BLtxtUtil('epub');
+		utilDef.washer.merge(TextWasher.getInstance(new File(curDir, 'epub/epubWash.tpac')));
+		Clmap epubDefClmap = new ClmapServer().soak(new File(curDir, 'epub/epubDef.tpac')).getAt('clmap:EPUB定義');
+		utilDef.clmap.merge(epubDefClmap);
+		utilDef.clmap.config.tgtDir = tgtDir;
+		utilDef.clmap.config.outDir = outDir;
+		Map bindDef = utilDef.convert(defFile.getText('UTF-8')) as Map;
+		
+		// 本文を参照します
+		Map bindBodys = [:];
+		BLtxtUtil utilBody = new BLtxtUtil('epub');
+		utilBody.washer.merge(TextWasher.getInstance(new File(curDir, 'epub/epubWash.tpac')));
+		Clmap epubBodyClmap = new ClmapServer().soak(new File(curDir, 'epub/epubBody.tpac')).getAt('clmap:EPUB本文');
+		utilBody.clmap.merge(epubBodyClmap);
+		tgtDir.listFiles().each { File txtFile ->
+			if (FilenameUtils.getExtension(txtFile.name) == 'txt'){
+				utilBody.clmap.config.tgtDir = tgtDir;
+				utilBody.clmap.config.outDir = outDir;
+				utilBody.clmap.config.curFile = txtFile;
+				utilBody.clmap.config.curPath = "${FilenameUtils.getBaseName(txtFile.name)}.xhtml";
+				Map bindBody = utilBody.convert(txtFile.getText('UTF-8')) as Map;
+				bindBodys[txtFile] = bindBody;
+			}
+		}
+		
+		// 本文を出力します
+		bindBodys.each { File txtFile, Map bindBody ->
+			new File(outDir, "item/xhtml/${FilenameUtils.getBaseName(txtFile.name)}.xhtml").setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-body.xhtml', bindBody));
+		}
+		
+		// p-toc.xhtmlファイルを出力します
+		List idxList = [];
+		bindBodys.each { File txtFile, Map bindBody ->
+			idxList << bindBody['idx'];
+		}
+		bindDef['idx'] = idxList.join("\n");
+		new File(outDir, "item/xhtml/p-toc.xhtml").setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-toc.xhtml', bindDef));
+		
+		// OPFファイルを出力します
+		new File(outDir, 'item/standard.opf').setText(BLtxtUtil.applyTemplate('epub', 'item/standard.opf', bindDef));
+		// navigationファイルを出力します
+		BLtxtUtil.copyTemplate('epub', 'item/navigation-documents.xhtml', new File(outDir, 'item/navigation-documents.xhtml'));
+		// p-coverファイルを出力します
+		new File(outDir, 'item/xhtml/p-cover.xhtml').setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-cover.xhtml', bindDef));
+		// p-titleファイルを出力します
+		new File(outDir, 'item/xhtml/p-title.xhtml').setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-title.xhtml', bindDef));
+		// p-caution.xhtmlファイルを出力します
+		new File(outDir, 'item/xhtml/p-caution.xhtml').setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-caution.xhtml', bindDef));
+		// p-addition.xhtmlファイルを出力します
+		new File(outDir, 'item/xhtml/p-addition.xhtml').setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-addition.xhtml', bindDef));
+		// p-colophonファイルを出力します
+		new File(outDir, 'item/xhtml/p-colophon.xhtml').setText(BLtxtUtil.applyTemplate('epub', 'item/xhtml/p-colophon.xhtml', bindDef));
+		
+		// 圧縮してepubファイルを生成します
+		new AntBuilder().zip(destfile: new File(outDir, "${tgtDir.name}.epub")){
+			fileset(dir: outDir.path);
+		}
+		
+		swing.procStatus.text += "処理が完了しました。\n";
+	} catch (BLtxtUtilException exc){
+		clmap.LOG.error("epubファイルの生成時に問題が発生しました。", exc);
+		File errorFile = new File(curDir, 'tmp/error.log');
+		errorFile.setText(exc.text);
+		Desktop.getDesktop().open(errorFile);
+		new SwingExceptionDialog().show(swing.mainFrame, exc, "epubファイルの生成時に問題が発生しました。詳細はログファイルを参照してください。");
+	} catch (exc){
+		clmap.LOG.error("epubファイルの生成時に問題が発生しました。", exc);
+		new SwingExceptionDialog().show(swing.mainFrame, exc, "epubファイルの生成時に問題が発生しました。詳細はログファイルを参照してください。");
+	}
+	Desktop.getDesktop().open(outDir);

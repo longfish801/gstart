@@ -21,7 +21,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * ドラッグ＆ドロップでファイルを選択するためのダイアログです。<br>

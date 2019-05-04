@@ -19,14 +19,14 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.event.ActionEvent;
-import io.github.longfish801.yakumo.clmap.Clinfo;
+import io.github.longfish801.clmap.Clinfo;
 import io.github.longfish801.gstart.guiparts.application.FreeSizeApplication;
 import io.github.longfish801.gstart.guiparts.dialog.FxDialog;
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfo;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfoFile;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * スクリプト実行コンソールです。
@@ -49,6 +49,8 @@ class ScriptConsole extends FreeSizeApplication implements Initializable {
 	List menuList = [];
 	/** スクリプトツリーのコンテキストメニュー */
 	ContextMenu contextMenu = new ContextMenu();
+	/** ウィンドウを表示中か否か */
+	boolean isShow = false;
 	/** ステータスラベル */
 	@FXML Label status;
 	/** スクリプトツリー */
@@ -161,6 +163,13 @@ class ScriptConsole extends FreeSizeApplication implements Initializable {
 	void show(){
 		if (action == null) throw new IllegalStateException('各操作時に実行するクロージャ情報 actionが設定されていません。');
 		super.show();
+	}
+	
+	/**
+	 * スクリプト実行コンソールを開始しているか否か返します。
+	 */
+	boolean isShow(){
+		return started;
 	}
 	
 	/**

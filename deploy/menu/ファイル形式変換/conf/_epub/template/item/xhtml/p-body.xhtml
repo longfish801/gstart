@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="ja" class="vrtl">
+<head>
+<meta charset="UTF-8"/>
+<title><%= head['ヘッダタイトル'] %></title>
+<link rel="stylesheet" type="text/css" href="../style/book-style.css"/>
+</head>
+<body class="p-text">
+<div class="main">
+
+<% if (head.containsKey('タイトル画像')){ %>
+<div class="m-left-2em"><img class="fit max-height-080per" src="../image/<%= head['タイトル画像'] %>" alt="<%= head['タイトル'] %>"/></div>
+<% } else if (head.containsKey('タイトル')){ %><div class="m-left-2em">
+<h1 class="font-2em "><%= head['タイトル'] %></h1>
+<% if (head.containsKey('サブタイトル')){ %><div class="font-1em30"><%= head['サブタイトル'] %></div><% } %>
+<% if (head.containsKey('著者名')){ %><div class="align-end"><%= head['著者名'] %></div><% } %>
+</div><% } %>
+
+<%= body %>
+
+<% if (!note.isEmpty()){ %><div class="pagebreak-both">
+<h1 id="toc-003" class="font-1em30">《註記》</h1>
+<%= note %><% } %>
+
+</div>
+</body>
+</html>

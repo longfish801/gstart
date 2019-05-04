@@ -6,7 +6,7 @@
 package io.github.longfish801.gstart;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.shared.lang.ArgmentChecker;
+import io.github.longfish801.shared.ArgmentChecker;
 
 /**
  * 各機能のインスタンスを保持します。

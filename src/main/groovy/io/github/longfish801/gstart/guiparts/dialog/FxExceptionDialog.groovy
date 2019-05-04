@@ -6,8 +6,8 @@
 package io.github.longfish801.gstart.guiparts.dialog;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.shared.lang.ArgmentChecker;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ArgmentChecker;
+import io.github.longfish801.shared.ExchangeResource;
 import javafx.stage.Window;
 
 /**
@@ -19,7 +19,7 @@ import javafx.stage.Window;
 @Slf4j('LOG')
 class FxExceptionDialog extends FxTextDialog {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(FxExceptionDialog.class);
+	static final ConfigObject cnst = ExchangeResource.config(FxExceptionDialog.class);
 	
 	/**
 	 * コンストラクタです。
@@ -58,7 +58,7 @@ class FxExceptionDialog extends FxTextDialog {
 		Throwable origin = digOriginalCause(exception);
 		
 		// スタックトレース文字列を生成します
-		List stackTraces = origin.stackTrace.findAll { stack -> constants.filterpatterns.any { stack.toString().matches(it) } };
+		List stackTraces = origin.stackTrace.findAll { stack -> cnst.filterpatterns.any { stack.toString().matches(it) } };
 		String stackTraceText = stackTraces.collect { "\t" + it.toString() }.join("\n");
 		if (stackTraceText.empty) stackTraceText = origin.stackTrace.collect { "\t" + it.toString() }.join("\n");
 		

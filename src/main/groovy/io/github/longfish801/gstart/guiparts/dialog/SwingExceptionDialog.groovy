@@ -5,7 +5,7 @@
  */
 package io.github.longfish801.gstart.guiparts.dialog;
 
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ExchangeResource;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 
@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 class SwingExceptionDialog extends SwingTextDialog {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(SwingExceptionDialog.class);
+	static final ConfigObject cnst = ExchangeResource.config(SwingExceptionDialog.class);
 	
 	/**
 	 * ダイアログを表示します。<br>
@@ -28,7 +28,7 @@ class SwingExceptionDialog extends SwingTextDialog {
 	 */
 	void show(Component owner, Throwable exc, String message){
 		Throwable origin = digOriginalCause(exc);
-		List stackTraces = origin.stackTrace.findAll { stack -> constants.filterpatterns.any { stack.toString().matches(it) } };
+		List stackTraces = origin.stackTrace.findAll { stack -> cnst.filterpatterns.any { stack.toString().matches(it) } };
 		String stackTraceText = stackTraces.collect { "\t" + it.toString() }.join("\n");
 		if (stackTraceText.empty) stackTraceText = origin.stackTrace.collect { "\t" + it.toString() }.join("\n");
 		super.show(owner, message, "${origin.class.name}: ${origin.message}\n${stackTraceText}");

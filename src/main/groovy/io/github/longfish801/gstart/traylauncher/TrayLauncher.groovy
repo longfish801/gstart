@@ -16,11 +16,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import io.github.longfish801.yakumo.clmap.Clinfo;
+import io.github.longfish801.clmap.Clinfo;
 import io.github.longfish801.gstart.guiparts.icon.AppTrayIcon;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfo;
 import io.github.longfish801.gstart.guiparts.menu.MenuInfoFile;
-import io.github.longfish801.shared.lang.ArgmentChecker;
+import io.github.longfish801.shared.ArgmentChecker;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -137,6 +137,13 @@ class TrayLauncher {
 		if (action == null) throw new IllegalStateException('各操作時に実行するクロージャ情報 actionが設定されていません。');
 		reload();
 		if (!SystemTray.systemTray.trayIcons.contains(AppTrayIcon.icon)) SystemTray.systemTray.add(AppTrayIcon.icon);
+	}
+	
+	/**
+	 * タスクトレイランチャーを開始しているか否か返します。
+	 */
+	boolean isShow(){
+		return SystemTray.systemTray.trayIcons.contains(AppTrayIcon.icon);
 	}
 	
 	/**

@@ -6,8 +6,7 @@
 package io.github.longfish801.gstart;
 
 import groovy.util.logging.Slf4j;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassSlurper;
+import io.github.longfish801.shared.ExchangeResource;
 
 /**
  * スタートアップスクリプトを実行します。<br>
@@ -18,7 +17,7 @@ import io.github.longfish801.shared.util.ClassSlurper;
 @Slf4j('LOG')
 class Gstart {
 	/** ConfigObject */
-	protected static final ConfigObject constants = ClassSlurper.getConfig(Gstart.class);
+	static final ConfigObject cnst = ExchangeResource.config(Gstart.class);
 	/** GroovyShell */
 	static GroovyShell shell = new GroovyShell(Gstart.class.classLoader);
 	
@@ -32,9 +31,9 @@ class Gstart {
 		LOG.info('スタートアップスクリプトを実行します。args={}', Arrays.toString(args));
 		Object result = null;
 		try {
-			result = new Gstart().runDSL(constants.resourceName, args);
+			result = new Gstart().runDSL(cnst.resourceName, args);
 		} catch (Throwable exc){
-			LOG.error('スタートアップスクリプトの実行に失敗しました。resourceName={}', constants.resourceName, exc);
+			LOG.error('スタートアップスクリプトの実行に失敗しました。resourceName={}', cnst.resourceName, exc);
 		} finally {
 			LOG.info('スタートアップスクリプトを実行しました。args={}, result={}', Arrays.toString(args), result);
 		}
@@ -47,7 +46,7 @@ class Gstart {
 	 * @return Groovyスクリプトの実行結果
 	 */
 	Object runDSL(String name, String[] args){
-		URL url = new ExistResource(Gstart.class).get(name);
+		URL url = ExchangeResource.url(Gstart.class, name);
 		return shell.run(url.toURI(), args);
 	}
 }

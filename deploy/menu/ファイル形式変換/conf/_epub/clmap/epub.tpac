@@ -1,0 +1,334 @@
+#! clmap EPUB化
+
+## dec
+import groovy.util.slurpersupport.GPathResult;
+import io.github.longfish801.bltxt.BLxmlConvertor;
+import org.apache.commons.lang3.StringEscapeUtils;
+
+## map nodeKey
+# args
+	BLxmlConvertor convertor, GPathResult node
+# closure
+	return '';
+
+# closure div
+	return node.@tag as String;
+
+# closure block
+	return node.@tag as String;
+
+# closure inline
+	return node.@tag as String;
+
+## map blxml
+# args
+	BLxmlConvertor convertor, GPathResult node
+# closure
+	Map binding = [:];
+	binding['meta'] = clmap.cl("blxml#meta").call(convertor, node);
+	binding['head'] = clmap.cl("blxml#head").call(convertor, node);
+	binding['body'] = clmap.cl("blxml#body").call(convertor, node);
+	binding['idx']  = clmap.cl("blxml#idx").call(convertor, node);
+	binding['note']  = clmap.cl("blxml#note").call(convertor, node);
+	return binding;
+
+# closure meta
+	// メタ情報を生成します
+	Map map = [:];
+	node.children().each { GPathResult subNode ->
+		if (subNode.name() == 'meta') map[subNode.@tag as String] = convertor.convertNodeChildren(subNode.cont).join('');
+	}
+	return map;
+
+# closure head
+	// ヘッダ情報を生成します
+	Map map = [:];
+	node.children().each { GPathResult subNode ->
+		if (subNode.name() == 'head') map[subNode.@tag as String] = convertor.convertNodeChildren(subNode.line).join('');
+	}
+	return map;
+
+# closure body
+	// 本文を生成します
+	return convertor.convertNodeChildren(node.cont).join("\n\n") + "\n";
+
+# closure idx
+	// 目次を生成します
+	List list = [];
+	// レベル１の見出しはタイトルから作成します
+	def titleNode = node.depthFirst().find { it.name() == 'head' && it.@tag == 'タイトル' };
+	if (titleNode != null){
+		list << """<div><a href="${config.curPath}">${convertor.convertNodeChildren(titleNode.line).join("")}</a></div>""";
+	}
+	// レベル２以降は見出し要素から作成します
+	node.cont.children().each { GPathResult subNode ->
+		if (subNode.name() == 'div' && subNode.@tag == '見出し'){
+			list << clmap.cl('idx').call(convertor, subNode);
+		}
+	}
+	return (list.size() == 0)? '' : """${list.join("\n")}""";
+
+# closure note
+	// 註のノードと、そのキーを収集します
+	def noteList = node.depthFirst().findAll { it.name() == 'inline' && it.@tag == '註' };
+	List noteKeys = [];
+	noteList.each { noteKeys << it.attr.getAt(0).text() }
+	if (noteKeys.size() == 0) return '';
+	
+	// 註記のノードと、そのキーを収集します
+	def cmntList = node.depthFirst().findAll { it.name() == 'meta' && it.@tag == '註記' };
+	List cmntKeys = [];
+	Map cmntMap = [:];
+	cmntList.each {
+		cmntKeys << it.attr.getAt(0).text();
+		cmntMap[it.attr.getAt(0).text()] = it;
+	}
+	
+	// キーをチェックします
+	if (noteKeys.unique(false).size() < noteKeys.size()){
+		Map map = [:];
+		noteKeys.each { map[it] = (map.containsKey(it))? ++ map[it] : 1 }
+		convertor.warnings << "註のキーに重複があります。：重複キー=${map.findAll { it.value > 1 }.keySet()}";
+		return '';
+	}
+	List diff1 = noteKeys - cmntKeys;
+	if (diff1.size() > 0){
+		convertor.warnings << "註に対する註記の記述漏れがあります。：diff=${diff1}";
+		return '';
+	}
+	List diff2 = cmntKeys - noteKeys;
+	if (diff2.size() > 0){
+		convertor.warnings << "不要な註記あるいは註の記述漏れがあります。：diff=${diff2}";
+		return '';
+	}
+	
+	// 註記を返します
+	List list = [];
+	list << """<dl class="notecmnt">""";
+	int counter = 0;
+	noteKeys.each { String noteKey ->
+		counter ++;
+		List lowers = convertor.convertNodeChildren(cmntMap[noteKey].cont);
+		list << """<dt><a name="t${counter}" href="#f${counter}"><span class="tcy">[*${counter}]</span></a></dt>""";
+		list << """<dd>""";
+		list << lowers.join("\n");
+		list << """</dd>""";
+	}
+	list << """</dl>""";
+	return list.join("\n");
+
+## map idx
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List attrs = node.attr.collect { it.text() };
+	String cont = convertor.convertNodeChildren(node.line).join('');
+
+# closure
+	String result = '';
+	switch (attrs[0]){
+		case '2':
+			result = """<div class="start-1em"><a href="${config.curPath}#id${node.@id}">${cont}</a></div>""";
+			break;
+		case '3':
+			result = """<div class="start-2em font-0em90"><a href="${config.curPath}#id${node.@id}">${cont}</a></div>""";
+			break;
+		default:
+			convertor.warnings << "目次生成中に、未対応の見出しレベルがみつかりました：node=${node.toString()}";
+			break;
+	}
+	return result;
+
+## map para
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List lowers = convertor.convertNodeChildren(node);
+
+# closure
+	String result = '';
+	if (node.parent().parent().name() == 'blxml'){
+		// 最上位にあるならば pタグを付与します
+		result = """<p>${lowers.join('<br>\n')}</p>""";
+	} else {
+		// 上位に他のblock要素があるならば、そのタグ名に応じて pタグを付与します
+		String parentTag = node.parent().parent().@tag;
+		switch (parentTag){
+			case '項目':
+			case '対象':
+			case '説明':
+			case '見出しセル':
+			case 'セル':
+				result = """${lowers.join('<br>\n')}""";
+				break;
+			case '生データ':
+			case '整形済':
+			case 'コード':
+				result = """${lowers.join("\n")}""";
+				break;
+			default:
+				result = """<p>${lowers.join('<br>\n')}</p>""";
+				break;
+		}
+	}
+	return result;
+
+## map div
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List attrs = node.attr.collect { it.text() };
+	List lowers = convertor.convertNodeChildren(node.line);
+
+# closure
+	convertor.warnings << "未対応のdiv要素です：node=${node.toString()}";
+	return '';
+
+# closure 見出し
+	String result = '';
+	switch (attrs[0]){
+		case '1':
+			result = """<h1 class="font-2em m-left-1em m-right-1em" id="id${node.@id}">${lowers.join('')}</h1>""";
+			break;
+		case '2':
+			result = """<h2 class="font-1em50 m-left-1em m-right-1em50" id="id${node.@id}">${lowers.join('')}</h2>""";
+			break;
+		case '3':
+			result = """<h3 class="font-1em30 m-left-1em m-right-1em" id="id${node.@id}">${lowers.join('')}</h3>""";
+			break;
+		default:
+			convertor.warnings << "見出し作成中に、未対応の見出しレベルがみつかりました：node=${node.toString()}";
+			break;
+	}
+	return result;
+
+# closure 小見出し
+	return """<div class="font-1em30 m-left-1em m-right-1em">${lowers.join('')}</div>""";
+
+# closure 挿入図
+	String caption = (lowers.join('').isEmpty())? '' : """<br>${lowers.join('')}""";
+	return """<div class="m-left-005per m-right-005per"><img class="fit max-height-080per" src="../image/${attrs[0]}" alt="${attrs[1]}"/>${caption}</div>""";
+
+# closure 引用元
+	return """<div class="align-end">${lowers.join('')}</div>""";
+
+# closure 見出しセル
+	return """<th>${lowers.join("\n")}</th>""";
+
+# closure セル
+	return """<td>${lowers.join("\n")}</td>""";
+
+## map block
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List attrs = node.attr.collect { it.text() };
+	List lowers = convertor.convertNodeChildren(node.cont);
+
+# closure
+	convertor.warnings << "未対応のblock要素です：node=${node.toString()}";
+	return '';
+
+# closure 箇条書き
+	String result = '';
+	String type = (attrs.size() == 0)? '順序なし' : attrs[0];
+	switch (type){
+		case '順序なし':
+			result = """<ul>\n${lowers.join("\n")}\n</ul>""";
+			break;
+		case '順序あり':
+			result = """<ol>\n${lowers.join("\n")}\n</ol>""";
+			break;
+		case '項目説明':
+			result = """<dl>\n${lowers.join("\n")}\n</dl>""";
+			break;
+		default:
+			convertor.warnings << "未対応の箇条書きです：node=${node.toString()}";
+			break;
+	}
+	return result;
+
+# closure 項目
+	return """<li>${lowers.join("<br>\n")}</li>""";
+
+# closure 対象
+	return """<dt>${lowers.join("<br>\n")}</dt>""";
+
+# closure 説明
+	return """<dd>${lowers.join("<br>\n")}</dd>""";
+
+# closure 表
+	return """<table>\n${lowers.join("\n")}\n</table>""";
+
+# closure 行
+	return """<tr>\n${lowers.join("\n")}\n</tr>""";
+
+# closure コラム
+	return """<div class="column">\n${lowers.join("\n")}\n</div>""";
+
+# closure 引用
+	return """<div class="start-2em m-left-1em m-right-1em">\n${lowers.join("\n")}\n</div>""";
+
+# closure コード
+	return """<pre class="code">\n${lowers.join("\n")}\n</pre>""";
+
+# closure 生データ
+	result = """${node.cont.para.children().collect { it.toString() }.join("\n")}""";
+
+# closure 整形済
+	result = """<pre>${lowers.join("\n")}</pre>""";
+
+## map line
+# args
+	BLxmlConvertor convertor, GPathResult node
+# closure
+	return convertor.convertNodeChildren(node).join('');
+
+## map inline
+# args
+	BLxmlConvertor convertor, GPathResult node
+# prefix
+	List attrs = node.attr.collect { it.text() };
+	String cont = convertor.convertNodeChildren(node.cont).join('');
+
+# closure
+	convertor.warnings << "未対応のインライン要素です：node=${node.toString()}";
+	return '';
+
+# closure 註
+	if (!config.isSet('cmntcnt')) config.cmntcnt = 0;
+	++ config.cmntcnt;
+	return """<a class="noteref" id="f${config.cmntcnt}" href="#t${config.cmntcnt}"><span class="super tcy">*${config.cmntcnt}</span></a>""";
+
+# closure リンク
+	return """<a href="${attrs[0]}">${cont}</a>""";
+
+# closure 強調
+	return """<span class="bold">${cont}</span>""";
+
+# closure 最強調
+	return """<span class="font-200per">${cont}</span>""";
+
+# closure 傍点
+	return """<span class="em-sesame">${cont}</span>""";
+
+# closure ぼかし
+	return """<span class="font-075per">${cont}</span>""";
+
+# closure 訂正
+	return """<span class="line-through">${cont}</span>""";
+
+# closure ルビ
+	return "<ruby>${cont}<rt>${attrs[0]}</rt></ruby>";
+
+# closure 縦中横
+	return """<span class="tcy">${cont}</span>""";
+
+# closure 備考
+	return """<span class="font-075per">[※${cont}]</span>""";
+
+## map text
+# args
+	BLxmlConvertor convertor, GPathResult node
+# closure
+	return StringEscapeUtils.escapeXml(node.text());

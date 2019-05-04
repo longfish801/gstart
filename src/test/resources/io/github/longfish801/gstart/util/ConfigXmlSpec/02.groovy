@@ -1,0 +1,15 @@
+some1 = null;
+some2 = 0xAA as byte;
+some3 = 123 as short;
+some4 = 45;
+some5 = 123456L;
+some6 = 12.3F;
+some7 = 45.6D;
+some8 = 'c' as char;
+some9 = true;
+some10 = 78.9;
+some11 = 'abc';
+list = [ 1, 'a', true, null ];
+list2 = [];
+map = [ 'a': null, 2: 'b' ];
+map2 = [:];

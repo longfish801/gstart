@@ -1,25 +1,25 @@
 #! clmap gstart
 
-## dec
+#> dec
 	import io.github.longfish801.gstart.guiparts.dialog.FxDialog;
 	import org.slf4j.Logger;
 	import org.slf4j.LoggerFactory;
-## prefix
+#> prefix
 	Logger LOG = LoggerFactory.getLogger('io.github.longfish801');
 
-## map gstart
-# dec
+#> map gstart
+#>> dec
 	import javafx.application.Platform;
-# closure start
-	if (config.args != null && config.args.size() > 0){	// コマンドライン引数を指定された場合
+#>> closure start
+	if (args != null && args.size() > 0){	// コマンドライン引数を指定された場合
 		try {
 			// スクリプトへのパスとみなして実行します
-			for (String arg in config.args){
+			for (String arg in args){
 				LOG.info('スクリプトを実行します。path={}', arg);
-				config.funcs['taskexecutor'].runAsync(new File(arg));
+				funcs['taskexecutor'].runAsync(new File(arg));
 			}
 			// すべてのスクリプト実行が終わるまで、１秒間隔で待ちます
-			while (config.funcs['taskexecutor'].taskList.size() > 0) Thread.sleep(1000);
+			while (funcs['taskexecutor'].taskList.size() > 0) Thread.sleep(1000);
 		} catch (Throwable exc){
 			LOG.error('コマンドラインで指定されたスクリプトの実行時に問題が発生しました。', exc);
 		} finally {
@@ -27,16 +27,16 @@
 		}
 	} else {
 		// トレイアイコンを開始します
-		config.funcs['traylauncher'].show();
+		funcs['traylauncher'].show();
 		// スクリプト実行コンソールを表示します
-		// config.funcs['scriptconsole'].show();
+		// funcs['scriptconsole'].show();
 	}
-# closure stop
+#>> closure stop
 	try {
 		// トレイアイコンを終了します
-		config.funcs['traylauncher'].close();
+		funcs['traylauncher'].close();
 		// スクリプト実行コンソールを終了します
-		config.funcs['scriptconsole'].close();
+		funcs['scriptconsole'].close();
 	} catch (exc){
 		LOG.error('機能の停止時に問題が発生しました。', exc);
 	} finally {
@@ -44,68 +44,76 @@
 		Platform.exit();
 		LOG.info('Gstartを終了します。');
 	}
-# closure reload
+#>> closure reload
 	// トレイアイコンを再読込します
-	config.funcs['traylauncher'].reload();
+	funcs['traylauncher'].reload();
 	// スクリプト実行コンソールを再読込します
-	config.funcs['scriptconsole'].reload();
+	funcs['scriptconsole'].reload();
 
-## map menu
-# dec
+#> map menu
+#>> dec
 	import java.awt.Desktop;
-	import io.github.longfish801.shared.util.ClassConfig;
-# closure console
+	import io.github.longfish801.gstart.util.ClassConfig;
+#>> closure showconsole
 	// スクリプト実行コンソールを表示します
-	config.funcs['scriptconsole'].show();
-# closure help
+	funcs['scriptconsole'].show();
+#>> closure stopconsole
+	if (funcs['traylauncher'].isShow()){
+		// スクリプト実行コンソールを終了します
+		funcs['scriptconsole'].close();
+	} else {
+		// gstartを終了します
+		clmap.cl('gstart#stop').call();
+	}
+#>> closure help
 	// Gstartのサイトを開きます
 	Desktop.getDesktop().browse(new URI('https://longfish801.github.io/gstart/'));
-# closure open
+#>> closure open
 	// カレントフォルダを開きます
 	File curDir = new File(new File('.').getCanonicalPath());
 	Desktop.getDesktop().open(curDir);
-# closure log
+#>> closure log
 	// ログファイルを参照します
 	File logFile = new File(new File('log'), 'app.log');
 	Desktop.getDesktop().open(logFile);
-# closure appdir
+#>> closure appdir
 	// 設定値格納フォルダを参照します
 	Desktop.getDesktop().open(ClassConfig.rootDir);
-# closure version
+#>> closure version
 	// バージョン情報を表示します
 	FxDialog.alertInformation(new File('conf/version.txt').text);
 
-## map task
-# dec
+#> map task
+#>> dec
 	import io.github.longfish801.gstart.taskexecutor.notice.NoticeTask;
-# args
+#>> args
 	NoticeTask task
-# closure exception
+#>> closure exception
 	LOG.error('タスク実行中に例外が発生しました。sign={}', task.sign, task.exc);
 	FxDialog.exceptionDialog("タスク（${task.sign}）実行中に例外が発生しました。", task.exc);
 
-## map script
-# dec
-	import io.github.longfish801.shared.util.SystemEditor;
+#> map script
+#>> dec
+	import io.github.longfish801.gstart.util.SystemEditor;
 	import io.github.longfish801.gstart.scriptconsole.MyGroovyConsole;
-# args
+#>> args
 	File file
-# closure run
+#>> closure run
 	// 指定されたファイルをスクリプトファイルとみなして非同期実行します
-	config.funcs['taskexecutor'].runAsync(file);
-# closure editor
+	funcs['taskexecutor'].runAsync(file);
+#>> closure editor
 	// 指定されたファイルをエディタで開きます
 	SystemEditor.exec(file);
-# closure console
+#>> closure console
 	// 指定されたファイルを GroovyConsoleで開きます
 	MyGroovyConsole.exec(file);
 
-## map scriptconsole
-# dec
+#> map scriptconsole
+#>> dec
 	import io.github.longfish801.gstart.scriptconsole.ScriptConsole;
-# args
+#>> args
 	String combi, ScriptConsole console
-# closure
+#>> closure
 	switch (combi){
 		case ~/^script#.*$/:	// スクリプトツリーで選択されたスクリプトに対する操作です
 			if (console.scriptTree.selectionModel.empty){
@@ -118,12 +126,12 @@
 			clmap.cl(combi).call();
 	}
 
-## map traylauncher
-# dec
+#> map traylauncher
+#>> dec
 	import io.github.longfish801.gstart.traylauncher.TrayLauncher;
-# args
+#>> args
 	String combi, TrayLauncher launcher
-# closure
+#>> closure
 	switch (combi){
 		case ~/^script#.*$/:	// スクリプトツリーで選択されたスクリプトに対する操作です
 			clmap.cl(combi).call(launcher.selectedScript);

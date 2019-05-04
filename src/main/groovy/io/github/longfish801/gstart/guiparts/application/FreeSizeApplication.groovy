@@ -15,8 +15,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import io.github.longfish801.gstart.guiparts.icon.AppIcon;
-import io.github.longfish801.shared.lang.ExistResource;
-import io.github.longfish801.shared.util.ClassConfig;
+import io.github.longfish801.shared.ExchangeResource;
+import io.github.longfish801.gstart.util.ClassConfig;
 
 /**
  * サイズを変更可能で、再表示時に前回表示時と同じ大きさと位置で表示するアプリケーションです。<br>
@@ -88,7 +88,7 @@ abstract class FreeSizeApplication extends Application {
 	void start(Stage stage) {
 		if (config == null) throw new IllegalStateException('configが指定されていません。');
 		if (controller == null) throw new IllegalStateException('controllerが指定されていません。');
-		FXMLLoader loader = new FXMLLoader(new ExistResource(this.getClass()).get('.fxml'));
+		FXMLLoader loader = new FXMLLoader(ExchangeResource.url(this.getClass(), '.fxml'));
 		loader.controller = controller;
 		stage.scene = new Scene(loader.load() as Pane, config.window.sizeW, config.window.sizeH);
 		stage.icons.add(AppIcon.fxIcon);
