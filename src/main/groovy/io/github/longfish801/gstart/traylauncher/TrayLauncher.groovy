@@ -140,6 +140,13 @@ class TrayLauncher {
 	}
 	
 	/**
+	 * タスクトレイランチャーを開始しているか否か返します。
+	 */
+	boolean isShow(){
+		return SystemTray.systemTray.trayIcons.contains(AppTrayIcon.icon);
+	}
+	
+	/**
 	 * タスクトレイランチャーを終了します。
 	 */
 	void close(){

@@ -49,6 +49,8 @@ class ScriptConsole extends FreeSizeApplication implements Initializable {
 	List menuList = [];
 	/** スクリプトツリーのコンテキストメニュー */
 	ContextMenu contextMenu = new ContextMenu();
+	/** ウィンドウを表示中か否か */
+	boolean isShow = false;
 	/** ステータスラベル */
 	@FXML Label status;
 	/** スクリプトツリー */
@@ -161,6 +163,13 @@ class ScriptConsole extends FreeSizeApplication implements Initializable {
 	void show(){
 		if (action == null) throw new IllegalStateException('各操作時に実行するクロージャ情報 actionが設定されていません。');
 		super.show();
+	}
+	
+	/**
+	 * スクリプト実行コンソールを開始しているか否か返します。
+	 */
+	boolean isShow(){
+		return started;
 	}
 	
 	/**

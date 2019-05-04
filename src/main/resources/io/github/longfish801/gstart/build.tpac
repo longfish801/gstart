@@ -11,15 +11,15 @@
 #>> dec
 	import javafx.application.Platform;
 #>> closure start
-	if (config.args != null && config.args.size() > 0){	// コマンドライン引数を指定された場合
+	if (args != null && args.size() > 0){	// コマンドライン引数を指定された場合
 		try {
 			// スクリプトへのパスとみなして実行します
-			for (String arg in config.args){
+			for (String arg in args){
 				LOG.info('スクリプトを実行します。path={}', arg);
-				config.funcs['taskexecutor'].runAsync(new File(arg));
+				funcs['taskexecutor'].runAsync(new File(arg));
 			}
 			// すべてのスクリプト実行が終わるまで、１秒間隔で待ちます
-			while (config.funcs['taskexecutor'].taskList.size() > 0) Thread.sleep(1000);
+			while (funcs['taskexecutor'].taskList.size() > 0) Thread.sleep(1000);
 		} catch (Throwable exc){
 			LOG.error('コマンドラインで指定されたスクリプトの実行時に問題が発生しました。', exc);
 		} finally {
@@ -27,16 +27,16 @@
 		}
 	} else {
 		// トレイアイコンを開始します
-		config.funcs['traylauncher'].show();
+		funcs['traylauncher'].show();
 		// スクリプト実行コンソールを表示します
-		// config.funcs['scriptconsole'].show();
+		// funcs['scriptconsole'].show();
 	}
 #>> closure stop
 	try {
 		// トレイアイコンを終了します
-		config.funcs['traylauncher'].close();
+		funcs['traylauncher'].close();
 		// スクリプト実行コンソールを終了します
-		config.funcs['scriptconsole'].close();
+		funcs['scriptconsole'].close();
 	} catch (exc){
 		LOG.error('機能の停止時に問題が発生しました。', exc);
 	} finally {
@@ -46,17 +46,25 @@
 	}
 #>> closure reload
 	// トレイアイコンを再読込します
-	config.funcs['traylauncher'].reload();
+	funcs['traylauncher'].reload();
 	// スクリプト実行コンソールを再読込します
-	config.funcs['scriptconsole'].reload();
+	funcs['scriptconsole'].reload();
 
 #> map menu
 #>> dec
 	import java.awt.Desktop;
 	import io.github.longfish801.gstart.util.ClassConfig;
-#>> closure console
+#>> closure showconsole
 	// スクリプト実行コンソールを表示します
-	config.funcs['scriptconsole'].show();
+	funcs['scriptconsole'].show();
+#>> closure stopconsole
+	if (funcs['traylauncher'].isShow()){
+		// スクリプト実行コンソールを終了します
+		funcs['scriptconsole'].close();
+	} else {
+		// gstartを終了します
+		clmap.cl('gstart#stop').call();
+	}
 #>> closure help
 	// Gstartのサイトを開きます
 	Desktop.getDesktop().browse(new URI('https://longfish801.github.io/gstart/'));
@@ -92,7 +100,7 @@
 	File file
 #>> closure run
 	// 指定されたファイルをスクリプトファイルとみなして非同期実行します
-	config.funcs['taskexecutor'].runAsync(file);
+	funcs['taskexecutor'].runAsync(file);
 #>> closure editor
 	// 指定されたファイルをエディタで開きます
 	SystemEditor.exec(file);

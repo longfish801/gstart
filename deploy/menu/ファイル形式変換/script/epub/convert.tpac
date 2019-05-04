@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import io.github.longfish801.bltxt.BLtxtUtil;
 import io.github.longfish801.bltxt.BLtxtUtil.BLtxtUtilException;
 import io.github.longfish801.clmap.Clmap;
+import io.github.longfish801.clmap.ClmapServer;
 import io.github.longfish801.gstart.guiparts.dialog.SwingExceptionDialog;
 import io.github.longfish801.gstart.guiparts.dialog.SwingFileDndDialog;
 import io.github.longfish801.gstart.util.ClassConfig;
@@ -86,7 +87,8 @@ import org.apache.commons.io.FilenameUtils;
 		if (!defFile.exists()) throw new IOException("epub定義ファイルがありません。path=${defFile.path}");
 		BLtxtUtil utilDef = new BLtxtUtil('epub');
 		utilDef.washer.merge(TextWasher.getInstance(new File(curDir, 'epub/epubWash.tpac')));
-		utilDef.clmap.merge(new Clmap(new File(curDir, 'epub/epubDef.tpac')));
+		Clmap epubDefClmap = new ClmapServer().soak(new File(curDir, 'epub/epubDef.tpac')).getAt('clmap:EPUB定義');
+		utilDef.clmap.merge(epubDefClmap);
 		utilDef.clmap.config.tgtDir = tgtDir;
 		utilDef.clmap.config.outDir = outDir;
 		Map bindDef = utilDef.convert(defFile.getText('UTF-8')) as Map;
@@ -95,7 +97,8 @@ import org.apache.commons.io.FilenameUtils;
 		Map bindBodys = [:];
 		BLtxtUtil utilBody = new BLtxtUtil('epub');
 		utilBody.washer.merge(TextWasher.getInstance(new File(curDir, 'epub/epubWash.tpac')));
-		utilBody.clmap.merge(new Clmap(new File(curDir, 'epub/epubBody.tpac')));
+		Clmap epubBodyClmap = new ClmapServer().soak(new File(curDir, 'epub/epubBody.tpac')).getAt('clmap:EPUB本文');
+		utilBody.clmap.merge(epubBodyClmap);
 		tgtDir.listFiles().each { File txtFile ->
 			if (FilenameUtils.getExtension(txtFile.name) == 'txt'){
 				utilBody.clmap.config.tgtDir = tgtDir;

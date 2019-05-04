@@ -10,10 +10,11 @@ version = '0.2.00';
 
 dependencies {
 	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3';
+	compile group: 'io.github.longfish801', name: 'clmap', version: '0.2.00';
 	compile group: 'io.github.longfish801', name: 'shared', version: '0.2.00';
 	compile group: 'io.github.longfish801', name: 'yakumo', version: '0.2.00';
+	compile group: 'org.apache.ivy', name: 'ivy', version: '2.4.0';
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1';
-compile 'org.apache.ivy:ivy:2.4.0';
 	compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.3';
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25';
 	testCompile group: 'org.spockframework', name: 'spock-core', version: '1.2-groovy-2.5';

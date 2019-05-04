@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ユーザマニュアル</title>
+<link href="/gstart/_asset/style.css" rel="stylesheet">
+<script src="/gstart/_asset/script.js"></script>
+</head>
+<body>
+
+<header class="container">
+<h1>ユーザマニュアル</h1>
+
+<nav class="list-group">
+<a href="#id2_1" class="list-group-item">フォルダ構成</a>
+<a href="#id2_2" class="list-group-item">起動</a>
+<a href="#id2_3" class="list-group-item">タスクトレイアイコン</a>
+<a href="#id2_4" class="list-group-item">スクリプトの作成</a>
+<a href="#id2_5" class="list-group-item">ログ出力</a>
+</nav>
+</header>
+
+<article class="container">
+<h2><a name="id2_1"></a>フォルダ構成</h2>
+
+<pre>インストールフォルダ
+　├ gstart.exe　実行ファイル
+　├ gstart.l4j.ini　Javaオプション設定ファイル
+　├ conf　設定フォルダ。設定ファイルを格納します。
+　├ lib　ライブラリフォルダ。JARファイルを格納します。
+　├ log　ログフォルダ。ログファイルを格納します。
+　└ menu　メニューフォルダ。タスクトレイアイコンから実行する Groovyスクリプトを格納します。</pre>
+
+<h2><a name="id2_2"></a>起動</h2>
+
+<p>　実行ファイル gstart.exeを実行すると、タスクトレイに以下のアイコンを表示します。</p>
+
+<figure><img src="img/icon.png" alt="gstartのアイコン" class="img-responsive center-block"><figcaption>gstartのアイコン</figcaption></figure>
+
+<h2><a name="id2_3"></a>タスクトレイアイコン</h2>
+
+<p>　タスクトレイアイコンを右クリックすると、以下のメニューを表示します。</p>
+
+<dl>
+<dt>終了</dt>
+<dd>gstartを終了します。</dd>
+<dt>ルートフォルダ</dt>
+<dd>インストールフォルダをエクスプローラで開きます。</dd>
+<dt>アプリデータ</dt>
+<dd>データフォルダをエクスプローラで開きます。</dd>
+<dt>ログ参照</dt>
+<dd>ログファイルを開きます。</dd>
+<dt>再読込</dt>
+<dd>menuフォルダ配下からスクリプトを再読込します。</dd>
+<dt>コンソール</dt>
+<dd>スクリプト実行コンソールを起動します。</dd>
+<dt>ヘルプ</dt>
+<dd>gstartのサイトをブラウザで表示します。</dd>
+</dl>
+
+<p>　上記に加えて、menuフォルダ配下にあるスクリプトを表示します。<br/>
+　選択すると実行します。</p>
+
+<h2><a name="id2_4"></a>スクリプトの作成</h2>
+
+<p>　スクリプトを作成するときは、以下の点に留意してください。</p>
+
+<ul>
+<li>ファイルの拡張子は「.gvy」としてください。</li>
+<li>文字コードは UTF-8を使用してください。</li>
+</ul>
+
+<p>　スクリプトのファイル名（拡張子を除く）がメニュー名となります。<br/>
+　スクリプトのファイル名を「main.gvy」にすると、そのスクリプトを格納したフォルダ名がメニュー名となります。<br/>
+　このとき、同じフォルダ内にスクリプトが他にあっても無視します。</p>
+
+<p>　作成したスクリプトをmenuフォルダへ格納してください。<br/>
+　gstartが起動済の場合、メニュー「再読込」を実行すれば、追加したスクリプトを表示します。</p>
+
+<p>　JARファイルを追加したい場合は libフォルダへ格納し、gstartを再起動してください。<br/>
+　もしくはスクリプトファイルがあるフォルダに、サブフォルダ「lib」を作成し、そこに格納してください。</p>
+
+<p>　confフォルダにはクラスパスが通っています。<br/>
+　スクリプトファイルがあるフォルダにサブフォルダ「conf」を作成すれば、そこにもクラスパスが通ります。<br/>
+　設定ファイルの格納に利用してください。</p>
+
+<p>　システムプロパティ&quot;java.io.tmpdir&quot;で参照されるフォルダのサブフォルダ「gstart」をデータフォルダとします。<br/>
+　ここには一時的に保持したい設定値を格納します。<br/>
+　詳しくは<a href="/shared/groovydoc/io/github/longfish801/shared/util/ClassConfig.html">ClassConfig</a>を参照してください。</p>
+
+<p>　なお、拡張子「.gvy」を gstart.exeに関連付けすれば、ファイルのアイコンをダブルクリックすることで直接実行できるようになります。</p>
+
+<h2><a name="id2_5"></a>ログ出力</h2>
+
+<p>　デフォルトの設定では、ログは log\app.logに出力します。<br/>
+　ログ出力に関する設定は conf\logback.xmlに記述しています。</p>
+</article>
+
+<footer class="container">
+<a href="index.html">戻る</a>
+</footer>
+
+</body>
+</html>

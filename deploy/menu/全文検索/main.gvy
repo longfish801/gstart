@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -175,7 +176,7 @@ class TextSearcherApp {
 	 * ヘルプを表示します。
 	 */
 	void help(){
-		Desktop.getDesktop().open(new File('doc/zenbun/index.html'));
+		Desktop.getDesktop().browse(new File('menu/全文検索/help/index.html').toURI());
 	}
 
 	/**

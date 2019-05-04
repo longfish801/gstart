@@ -6,6 +6,8 @@ import java.awt.Desktop;
 
 import io.github.longfish801.bltxt.BLtxtUtil;
 import io.github.longfish801.bltxt.BLtxtUtil.BLtxtUtilException;
+import io.github.longfish801.clmap.Clmap;
+import io.github.longfish801.clmap.ClmapServer;
 import io.github.longfish801.gstart.guiparts.dialog.SwingExceptionDialog;
 import io.github.longfish801.gstart.util.ClassConfig;
 import io.github.longfish801.washscr.TextWasher;
@@ -24,7 +26,8 @@ import io.github.longfish801.washscr.TextWasher;
 			String text = new File(curDir, 'site/input.txt').getText('UTF-8');
 			BLtxtUtil util = new BLtxtUtil('html');
 			util.washer.merge(TextWasher.getInstance(new File(curDir, 'site/washAdd.tpac')));
-			util.clmap.merge(new Clmap(new File(curDir, 'site/htmlizeAdd.tpac')));
+			Clmap htmlizeAddClmap = new ClmapServer().soak(new File(curDir, 'site/htmlizeAdd.tpac')).getAt('clmap:HTML化処理の拡張');
+			util.clmap.merge(htmlizeAddClmap);
 			htmlStr = BLtxtUtil.applyTemplate('html', 'template.txt', util.convert(text) as Map);
 		} catch (exc){
 			clmap.LOG.error("HTML化時に問題が発生しました。", exc);

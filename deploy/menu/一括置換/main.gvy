@@ -6,7 +6,7 @@
 package io.github.longfish801.user;
 
 @GrabResolver(name = 'longfish801 github repositry', root = 'https://longfish801.github.io/maven/')
-@Grab('io.github.longfish801:yakumo:0.1.00')
+@Grab('io.github.longfish801:yakumo:0.2.00')
 @GrabExclude('org.codehaus.groovy:groovy-all')
 
 import groovy.util.logging.Slf4j;
@@ -27,7 +27,7 @@ import io.github.longfish801.gstart.guiparts.dialog.FxExceptionDialog;
 import io.github.longfish801.gstart.guiparts.dialog.FxTextDialog;
 import io.github.longfish801.gstart.util.ClassConfig;
 import io.github.longfish801.gstart.util.ScriptHelper;
-import io.github.longfish801.washscr.WashScr;
+import io.github.longfish801.washsh.WashServer;
 
 /**
  * WashTxtアプリケーションです。
@@ -50,7 +50,7 @@ class WashTxtApplication extends FreeSizeApplication implements Initializable {
 	@FXML RadioButton methodTypeReplace;
 	/** 処理方法：置換(正規表現) */
 	@FXML RadioButton methodTypeReprex;
-	/** 処理方法：WashScr */
+	/** 処理方法：Washsh */
 	@FXML RadioButton methodTypeScript;
 	/** 処理内容文字列 */
 	@FXML TextArea scriptText;
@@ -123,7 +123,7 @@ class WashTxtApplication extends FreeSizeApplication implements Initializable {
 		/** {@inheritDoc} */
 		@Override
 		protected Task<String> createTask() {
-			return new ConvertTask<String>();
+			return new ConvertTask();
 		}
 	}
 	
@@ -145,23 +145,28 @@ class WashTxtApplication extends FreeSizeApplication implements Initializable {
 			}
 			
 			// テキストを変換します
-			String code = "#! washscr WashTxtApplication\n## slice\n";
+			List codes = [];
+			codes << '#! washsh';
 			switch (methodType.selectedToggle.id){
 				case methodTypeReplace.id:
-					code += "# replace 固定置換\n" + scriptText.text + "\n";
+					codes << '#> format';
+					codes << '#>> replace';
+					codes << scriptText.text;
 					break;
 				case methodTypeReprex.id:
-					code += "# reprex 正規表現置換\n" + scriptText.text + "\n";
+					codes << '#> format';
+					codes << '#>> reprex';
+					codes << scriptText.text;
 					break;
 				case methodTypeScript.id:
-					code = "#! washscr WashTxtApplication\n" + scriptText.text + "\n";
+					codes << scriptText.text;
 					break;
 				default:
 					throw new InternalError("処理方法が選択されていません。");
 					break;
 			}
-			LOG.info('code={}', code);
-			return new WashScr(code).wash(targetText.text);
+			LOG.info('code={}', codes);
+			return new WashServer().soak(codes.join("\n")).getAt('washsh:').wash(targetText.text);
 		}
 		
 		/** {@inheritDoc} */

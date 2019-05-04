@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.event.ActionEvent;
 import io.github.longfish801.clmap.Clmap;
+import io.github.longfish801.clmap.ClmapServer;
 import io.github.longfish801.gstart.guiparts.application.FreeSizeApplication;
 import io.github.longfish801.gstart.guiparts.dialog.FxExceptionDialog;
 import io.github.longfish801.gstart.guiparts.ClipboardUtil;
@@ -96,7 +97,7 @@ class TextConvertApplication extends FreeSizeApplication implements Initializabl
 	 */
 	@Override
 	void initialize(URL location, ResourceBundle resources) {
-		clmap = new Clmap(fileClmap);
+		clmap = new ClmapServer().soak(fileClmap).getAt('clmap:テキスト変換');
 		List clNames = clmap.getClosureNames('default');
 		procList.items.addAll(*clNames);
 		procList.setStyle('-fx-font: 10pt "Yu Gothic UI Regular";');
@@ -143,7 +144,7 @@ class TextConvertApplication extends FreeSizeApplication implements Initializabl
 	 */
 	void reload(ActionEvent event){
 		try {
-			clmap = new Clmap(fileClmap);
+			clmap = new ClmapServer().soak(fileClmap).getAt('clmap:テキスト変換');
 			List clNames = clmap.getClosureNames('default');
 			int selectedIdx = (procList.selectionModel.selectedIndex >= clNames.size())? 0 : procList.selectionModel.selectedIndex;;
 			procList.items.clear();
@@ -171,7 +172,7 @@ class TextConvertApplication extends FreeSizeApplication implements Initializabl
 		/** {@inheritDoc} */
 		@Override
 		protected Task<String> createTask() {
-			return new ConvertTask<String>();
+			return new ConvertTask();
 		}
 	}
 	

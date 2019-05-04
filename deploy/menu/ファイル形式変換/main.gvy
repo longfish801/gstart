@@ -6,7 +6,7 @@
 package io.github.longfish801.user;
 
 @GrabResolver(name = 'longfish801 github repositry', root = 'https://longfish801.github.io/maven/')
-@Grab('io.github.longfish801:yakumo:0.1.00')
+@Grab('io.github.longfish801:yakumo:0.2.00')
 @GrabExclude('org.codehaus.groovy:groovy-all')
 
 import groovy.util.logging.Slf4j;
@@ -30,6 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import io.github.longfish801.gstart.guiparts.ClipboardUtil;
 import io.github.longfish801.gstart.guiparts.application.FreeSizeApplication;
+import io.github.longfish801.gstart.guiparts.dialog.FxDialog;
 import io.github.longfish801.gstart.guiparts.dialog.FxExceptionDialog;
 import io.github.longfish801.gstart.util.ClassConfig;
 import io.github.longfish801.gstart.util.ScriptHelper;
@@ -194,7 +195,7 @@ class YakumoApplication extends FreeSizeApplication implements Initializable {
 		/** {@inheritDoc} */
 		@Override
 		protected Task<String> createTask() {
-			return new ConvertTask<String>();
+			return new ConvertTask();
 		}
 	}
 	
@@ -218,7 +219,7 @@ class YakumoApplication extends FreeSizeApplication implements Initializable {
 			Closure washText = { String targetText ->
 				YmoScript ymoScript = new YmoScript();
 				ymoScript.configure('_bltxt');
-				return ymoScript.engine.washscr.wash(targetText);
+				return ymoScript.engine.washServer.getAt('washsh:_bltxt').wash(targetText);
 			}
 			
 			// テキストを変換します
@@ -231,7 +232,7 @@ class YakumoApplication extends FreeSizeApplication implements Initializable {
 					result = new BLtxt(washText.call(targetText.text)).toXml();
 					break;
 				case methodTypeHtmlize.id:
-					result = YmoScript.convert(['_bltxt', '_html'], targetText.text);
+					result = YmoScript.convert('_bltxt', '_html', targetText.text);
 					break;
 				default:
 					throw new InternalError("処理方法が選択されていません。");
@@ -275,7 +276,7 @@ class YakumoApplication extends FreeSizeApplication implements Initializable {
 		/** {@inheritDoc} */
 		@Override
 		protected Task<Boolean> createTask() {
-			return new ExecTask<Boolean>();
+			return new ExecTask();
 		}
 	}
 	
@@ -307,7 +308,7 @@ class YakumoApplication extends FreeSizeApplication implements Initializable {
 					} else {
 						convertName = FxDialog.singleSelect('変換名を選択してください。', convertNames);
 					}
-					new YmoDocument(targetDir.canonicalFile).run(convertName);
+					new YmoDocument(targetDir.canonicalFile).run(new File(targetDir, convertName));
 				} catch (Error error){
 					// Errorが発生した場合は例外に変換します
 					LOG.error('実行時にエラーが発生しました。');

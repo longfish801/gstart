@@ -8,7 +8,7 @@
 	</encoder>
 </appender>
 
-<logger name="io.github.longfish801" level="INFO"/>
+<logger name="io.github.longfish801" level="DEBUG"/>
 
 <root>
 	<level value="INFO" />

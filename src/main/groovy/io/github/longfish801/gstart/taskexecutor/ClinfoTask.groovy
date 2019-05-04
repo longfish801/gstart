@@ -24,7 +24,7 @@ class ClinfoTask extends NoticeTask {
 	 * @param clinfo Clinfo
 	 */
 	ClinfoTask(Clinfo clinfo) {
-		this.sign = clinfo.sign;
+		this.sign = clinfo.combiKey;
 		this.clinfo = clinfo;
 	}
 	

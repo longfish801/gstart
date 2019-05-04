@@ -28,7 +28,7 @@ class ConfigXmlSpec extends Specification {
 			ConfigObject config = new ConfigSlurper().parse(new File(testDir, "${fname}.groovy").toURL());
 			StringWriter writer = new StringWriter();
 			use(ConfigXml){ config.outputXml(writer) }
-			return writer.toString();
+			return writer.toString().denormalize();
 		}
 		
 		then:
